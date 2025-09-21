@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Penugasan - Cendekia Aksara</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        body{font-family:'Poppins',sans-serif;background-color:#f0f4f8;margin:20px;}
+        .container{max-width:800px;margin:auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.1)}
+        .hidden{display:none !important}
+        .btn{width:100%;padding:12px;border:none;border-radius:8px;color:#fff;background-color:#005a9c;font-weight:600;cursor:pointer}
+        .btn:disabled{background-color:#6c757d}
+        .form-group{margin-bottom:20px}
+        .form-group label{display:block;font-weight:600;margin-bottom:8px}
+        .form-group input,.form-group select,.form-group textarea{width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
+        h1,h2,h3{color:#003366;text-align:center}
+        .task-card{border:1px solid #ddd;padding:20px;border-radius:10px;margin-bottom:15px;background:#f9f9f9}
+        .task-card h3{margin:0 0 10px;text-align:left}
+        .task-card p{text-align:left;margin:4px 0;font-size:0.9em}
+        .tag{display:inline-block;padding:3px 10px;border-radius:15px;font-size:0.8em;font-weight:600;color:#fff}
+        .tag-blue{background-color:#005a9c}
+        .tag-green{background-color:#28a745}
+        .tag-gray{background-color:#6c757d}
+        .btn-danger{background-color:#dc3545;width:auto;padding:8px 15px;}
+        .card-actions{display:flex;gap:10px;margin-top:15px;}
+        /* --- CSS BARU UNTUK ANIMASI LOADING --- */
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.85); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
+        .progress-spinner { width: 60px; height: 60px; border-radius: 50%; border: 4px solid #e3e9ef; border-top-color: #005a9c; animation: spin 1s linear infinite; }
+        #loading-overlay p { margin-top: 20px; font-size: 1.2em; font-weight: 600; color: #003366; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="login-view" class="view">
+            <h1>Portal Penugasan</h1><p>Silakan masuk sesuai peran Anda.</p>
+            <form id="login-form"><div class="form-group"><label for="username">Username</label><input type="text" id="username" required></div><div class="form-group"><label for="password">Password</label><input type="password" id="password" required></div><button type="submit" class="btn">Login</button></form>
+        </div>
+        <div id="pengajar-view" class="view hidden">
+            <h2>Dashboard Pengajar</h2>
+            <div id="assignment-list-pengajar"></div><hr><h3>Buat Tugas Baru</h3>
+            <form id="create-assignment-form"><div class="form-group"><label for="judul-tugas">Judul Tugas</label><input type="text" id="judul-tugas" required></div><div class="form-group"><label for="matkul-tugas">Mata Pelajaran</label><input type="text" id="matkul-tugas" required></div><div class="form-group"><label for="tipe-tugas">Tipe Tugas</label><select id="tipe-tugas" required><option value="Esai">Esai (Jawaban Teks)</option><option value="Dokumen">Dokumen (Upload File)</option></select></div><div class="form-group"><label for="instruksi-tugas">Instruksi</label><textarea id="instruksi-tugas" rows="5" required></textarea></div><div class="form-group"><label for="deadline-tugas">Deadline</label><input type="datetime-local" id="deadline-tugas" required></div><button type="submit" class="btn">Terbitkan Tugas</button></form>
+        </div>
+        <div id="siswa-view" class="view hidden">
+            <h2 id="welcome-siswa"></h2><div id="assignment-list-siswa"></div>
+        </div>
+        <div id="task-detail-view" class="view hidden"></div>
+    </div>
+    <div id="loading-overlay" class="hidden"><div class="progress-spinner"></div><p id="loading-text">Memuat...</p></div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxCT-333LN8XCqZ7cb6pgAq5DBQ6axGRmCXk-AXMB-qPI2-alocYEB13N6LB86fKXvW/exec';
+    let currentUser = {};
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const loadingText = document.getElementById('loading-text');
+
+    function showLoading(message) { loadingText.textContent = message; loadingOverlay.classList.remove('hidden'); }
+    function hideLoading() { loadingOverlay.classList.add('hidden'); }
+    function updateView(targetId) { document.querySelectorAll('.view').forEach(v => v.classList.add('hidden')); document.getElementById(targetId).classList.remove('hidden'); }
+
+    document.getElementById('login-form').onsubmit = e => {
+        e.preventDefault();
+        showLoading('Memverifikasi...');
+        const btn = e.target.querySelector('button'); btn.disabled = true;
+        const payload = { action: 'login', username: document.getElementById('username').value, password: document.getElementById('password').value };
+        fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
+        .then(res => res.json()).then(data => {
+            if (data.status === 'success') {
+                currentUser = { name: data.name, role: data.role.toLowerCase() };
+                if (currentUser.role === 'pengajar') renderPengajarView();
+                else renderSiswaView();
+            } else { alert("Login Gagal"); }
+        }).catch(err => alert("Login Gagal atau terjadi kesalahan jaringan."))
+        .finally(() => { hideLoading(); btn.disabled = false; });
+    };
+
+    async function renderPengajarView() {
+        updateView('pengajar-view');
+        const listDiv = document.getElementById('assignment-list-pengajar');
+        showLoading('Memuat daftar tugas...');
+        try {
+            const response = await fetch(`${WEB_APP_URL}?action=getAssignments`);
+            const assignments = await response.json();
+            listDiv.innerHTML = '<h3>Tugas yang Sudah Diterbitkan</h3>';
+            if (!Array.isArray(assignments) || assignments.length === 0) {
+                listDiv.innerHTML += '<p>Anda belum membuat tugas apapun.</p>';
+            } else {
+                assignments.reverse().forEach(a => {
+                    const card = document.createElement('div');
+                    card.className = 'task-card';
+                    card.innerHTML = `<h3>${a.JudulTugas}</h3><p>${a.MataPelajaran}</p><div class="card-actions"><button class="btn btn-danger" data-id="${a.IDTugas}">Hapus Tugas</button></div>`;
+                    listDiv.appendChild(card);
+                });
+            }
+        } catch(err) { listDiv.innerHTML = '<p>Gagal memuat tugas.</p>'; }
+        finally { hideLoading(); }
+    }
+
+    // Event listener untuk tombol hapus
+    document.getElementById('assignment-list-pengajar').addEventListener('click', e => {
+        if(e.target.classList.contains('btn-danger')) {
+            const assignmentId = e.target.dataset.id;
+            if(confirm('Apakah Anda yakin ingin menghapus tugas ini? Semua data jawaban siswa terkait juga akan dihapus.')) {
+                showLoading('Menghapus tugas...');
+                const payload = { action: 'deleteAssignment', IDTugas: assignmentId };
+                fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
+                .then(res => res.json()).then(data => {
+                    if (data.status === 'success') { alert(data.message); renderPengajarView(); }
+                }).catch(err => alert("Gagal menghapus tugas."))
+                .finally(() => hideLoading());
+            }
+        }
+    });
+    
+    document.getElementById('create-assignment-form').onsubmit = e => {
+        e.preventDefault();
+        const btn = e.target.querySelector('button'); btn.disabled = true;
+        showLoading('Menerbitkan tugas...');
+        const payload = {
+            action: 'createAssignment', JudulTugas: document.getElementById('judul-tugas').value,
+            MataPelajaran: document.getElementById('matkul-tugas').value, TipeTugas: document.getElementById('tipe-tugas').value,
+            Instruksi: document.getElementById('instruksi-tugas').value, Deadline: document.getElementById('deadline-tugas').value,
+            NamaPengajar: currentUser.name
+        };
+        fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
+        .then(res => res.json()).then(data => {
+            if (data.status === 'success') { alert("Tugas berhasil diterbitkan!"); e.target.reset(); renderPengajarView(); }
+        }).finally(() => { hideLoading(); btn.disabled = false; });
+    };
+
+    async function renderSiswaView() {
+        updateView('siswa-view');
+        document.getElementById('welcome-siswa').textContent = `Selamat Datang, ${currentUser.name}!`;
+        const listDiv = document.getElementById('assignment-list-siswa');
+        showLoading('Memuat tugas...');
+        try {
+            const response = await fetch(`${WEB_APP_URL}?action=getAssignments`);
+            const assignments = await response.json();
+            listDiv.innerHTML = '';
+            if (!Array.isArray(assignments) || assignments.length === 0) {
+                 listDiv.innerHTML = '<h2>Tidak Ada Tugas</h2><p>Saat ini belum ada tugas yang aktif.</p>';
+            } else {
+                assignments.reverse().forEach(a => {
+                    const card = document.createElement('div');
+                    card.className = 'task-card';
+                    const deadline = new Date(a.Deadline);
+                    const isClosed = new Date() > deadline;
+                    card.innerHTML = `<h3>${a.JudulTugas}</h3><p>${a.MataPelajaran} oleh ${a.NamaPengajar}</p><span class="tag ${isClosed ? 'tag-gray' : 'tag-green'}">${isClosed ? 'Ditutup' : 'Buka'}</span><p>Deadline: ${deadline.toLocaleString('id-ID')}</p>`;
+                    card.onclick = () => showTaskDetail(a);
+                    listDiv.appendChild(card);
+                });
+            }
+        } catch(err) { listDiv.innerHTML = '<p>Gagal memuat tugas.</p>'; }
+        finally { hideLoading(); }
+    }
+
+    function showTaskDetail(assignment) {
+        updateView('task-detail-view');
+        const detailView = document.getElementById('task-detail-view');
+        const deadline = new Date(assignment.Deadline);
+        const isClosed = new Date() > deadline;
+        let formHTML = '';
+        if (isClosed) { formHTML = '<div class="tag tag-red" style="width:100%;text-align:center;padding:12px;box-sizing:border-box;">Tugas sudah ditutup.</div>'; }
+        else {
+            if (assignment.TipeTugas === 'Esai') { formHTML = `<form id="submit-form"><div class="form-group"><label for="jawaban-teks">Jawaban Esai Anda</label><textarea id="jawaban-teks" rows="10" required></textarea></div><button type="submit" class="btn">Kirim Jawaban</button></form>`; }
+            else if (assignment.TipeTugas === 'Dokumen') { formHTML = `<form id="submit-form"><div class="form-group"><label for="jawaban-file">Unggah File (PDF, DOCX)</label><input type="file" id="jawaban-file" required></div><button type="submit" class="btn">Kirim File</button></form>`; }
+        }
+        
+        // PERBAIKAN: Menambahkan tombol kembali yang berfungsi
+        detailView.innerHTML = `<button id="back-to-list-btn" class="btn" style="width:auto; margin-bottom:20px; background-color:#6c757d;">← Kembali</button><h2>${assignment.JudulTugas}</h2><p>${assignment.Instruksi}</p><hr>${formHTML}`;
+        
+        detailView.querySelector('#back-to-list-btn').onclick = renderSiswaView; // Event listener untuk tombol kembali
+        
+        if (!isClosed) {
+            detailView.querySelector('#submit-form').onsubmit = e => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button'); btn.disabled = true; showLoading('Mengirim tugas...');
+                const payload = { action: 'submitAnswer', IDTugas: assignment.IDTugas, NamaSiswa: currentUser.name, JudulTugas: assignment.JudulTugas, StatusPengumpulan: 'Tepat Waktu' };
+                if (assignment.TipeTugas === 'Esai') {
+                    payload.JawabanTeks = document.getElementById('jawaban-teks').value;
+                    sendData(payload, btn);
+                } else if (assignment.TipeTugas === 'Dokumen') {
+                    const file = document.getElementById('jawaban-file').files[0];
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onloadend = () => { payload.fileData = reader.result; payload.fileName = file.name; sendData(payload, btn); };
+                }
+            };
+        }
+    }
+
+    function sendData(payload, button) {
+        fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) })
+        .then(res => res.json()).then(data => { if (data.status === 'success') { alert("Tugas berhasil dikirim!"); renderSiswaView(); }})
+        .catch(err => alert("Gagal mengirim tugas.")).finally(() => { hideLoading(); button.disabled = false; });
+    }
+});
+</script>
+</body>
+</html>
