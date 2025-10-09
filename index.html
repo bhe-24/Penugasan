@@ -955,36 +955,62 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('grading-assignment-selector').onchange = async (e) => {
         const assignmentId = e.target.value;
         const studentGradingList = document.getElementById('student-grading-list');
-        if (!assignmentId) { studentGradingList.innerHTML = '<p>Silakan pilih tugas.</p>'; return; }
-        showLoading('Memuat data siswa dan jawaban...');
+        if (!assignmentId) {
+            studentGradingList.innerHTML = '<p>Silakan pilih tugas untuk memulai penilaian.</p>';
+            return;
+        }
+
+        showLoading('Memuat data jawaban siswa...');
         try {
-            const [studentsSnap, submissionsSnap] = await Promise.all([
-                db.collection('users').where('role', '==', 'siswa').get(),
-                db.collection('submissions').where('assignmentId', '==', assignmentId).get()
-            ]);
-            const allStudents = studentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const submissionsSnap = await db.collection('submissions').where('assignmentId', '==', assignmentId).get();
             const submissions = submissionsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
             studentGradingList.innerHTML = '';
-            if (allStudents.length === 0) { studentGradingList.innerHTML = '<p>Belum ada siswa.</p>'; }
-            allStudents.sort((a, b) => a.name.localeCompare(b.name)).forEach(student => {
-                const submission = submissions.find(s => s.studentUid === student.id);
-                const card = document.createElement('div'); card.className = 'grading-card';
-                const isGraded = submission && (submission.nilai !== null && submission.nilai !== undefined && submission.nilai !== '');
+            if (submissions.length === 0) {
+                studentGradingList.innerHTML = '<p>Belum ada siswa yang mengumpulkan tugas ini.</p>';
+                return;
+            }
+
+            submissions.sort((a, b) => a.studentName.localeCompare(b.studentName)).forEach(submission => {
+                const card = document.createElement('div');
+                card.className = 'grading-card';
+                
+                const isGraded = submission.nilai !== null && submission.nilai !== undefined && submission.nilai !== '';
                 const isDisabled = isGraded ? 'disabled' : '';
                 const buttonText = isGraded ? 'Tersimpan' : 'Simpan Nilai';
                 const buttonClass = isGraded ? 'btn-secondary' : 'btn-success';
-                let statusTag = `<span class="tag tag-gray">Belum Mengumpulkan</span>`;
-                if(submission) { statusTag = `<span class="tag ${isGraded ? 'tag-blue' : 'tag-green'}">${isGraded ? 'Sudah Dinilai' : 'Mengumpulkan'}</span>`}
+                
+                const statusTag = `<span class="tag ${isGraded ? 'tag-blue' : 'tag-green'}">${isGraded ? 'Sudah Dinilai' : 'Sudah Mengumpulkan'}</span>`;
+                
                 let jawabanHTML = '';
-                if (submission) {
-                    if (submission.fileUrl) { jawabanHTML = `<p><strong>File:</strong> <a href="${submission.fileUrl}" target="_blank" class="btn btn-secondary download-link"><i class="fa fa-download"></i> Unduh</a></p>`; } 
-                    else { jawabanHTML = `<p><strong>Jawaban:</strong> ${submission.jawabanTeks || '<i>N/A</i>'}</p>`; }
+                if (submission.fileUrl) {
+                    jawabanHTML = `<p><strong>File:</strong> <a href="${submission.fileUrl}" target="_blank" class="btn btn-secondary download-link"><i class="fa fa-download"></i> Unduh</a></p>`;
+                } else {
+                    jawabanHTML = `<p><strong>Jawaban:</strong> ${submission.jawabanTeks || '<i>N/A</i>'}</p>`;
                 }
-                card.innerHTML = `<div class="card-header"><h3>${student.name}</h3>${statusTag}</div>${submission ? `${jawabanHTML}<form class="grading-form" data-submission-id="${submission.id}"><div class="form-group"><label>Nilai:</label><input type="number" class="nilai-input" min="0" max="100" value="${submission.nilai || ''}" ${isDisabled}><label>Feedback:</label><textarea rows="2" class="feedback-input" ${isDisabled}>${submission.feedback || ''}</textarea></div><div class="grading-card-footer"><button type="submit" class="btn ${buttonClass}" style="width: auto;" ${isDisabled}>${buttonText}</button></div></form>` : '<p>Siswa ini belum mengumpulkan tugas.</p>'}`;
+
+                card.innerHTML = `
+                    <div class="card-header"><h3>${submission.studentName}</h3>${statusTag}</div>
+                    ${jawabanHTML}
+                    <form class="grading-form" data-submission-id="${submission.id}">
+                        <div class="form-group">
+                            <label>Nilai:</label>
+                            <input type="number" class="nilai-input" min="0" max="100" value="${submission.nilai || ''}" ${isDisabled}>
+                            <label>Feedback:</label>
+                            <textarea rows="2" class="feedback-input" ${isDisabled}>${submission.feedback || ''}</textarea>
+                        </div>
+                        <div class="grading-card-footer">
+                            <button type="submit" class="btn ${buttonClass}" style="width: auto;" ${isDisabled}>${buttonText}</button>
+                        </div>
+                    </form>`;
                 studentGradingList.appendChild(card);
             });
-        } catch(e) { studentGradingList.innerHTML = '<p>Gagal memuat data penilaian.</p>'; } 
-        finally { hideLoading(); }
+        } catch(e) {
+            console.error('Gagal memuat data penilaian:', e);
+            studentGradingList.innerHTML = '<p>Gagal memuat data penilaian.</p>';
+        } finally {
+            hideLoading();
+        }
     };
     
     document.getElementById('student-grading-list').addEventListener('submit', async (e) => {
