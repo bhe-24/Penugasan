@@ -455,7 +455,17 @@ document.addEventListener('DOMContentLoaded', () => {
         let contentHTML = `<button class="btn btn-secondary back-to-tugas-view" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>`;
         
         if (isSubmitted) {
-            contentHTML += `<div class="submission-success-view"><i class="fa-solid fa-paper-plane"></i><h3>Tugas Terkirim</h3><p>Anda sudah mengerjakan tugas ini.</p></div>`;
+            let gradeInfoHTML = '';
+            // Cek jika nilai sudah diberikan oleh guru
+            if (isSubmitted.nilai !== null && isSubmitted.nilai !== undefined && isSubmitted.nilai !== '') {
+                 gradeInfoHTML = `
+                    <p>Tugas Anda telah dinilai oleh pengajar.</p>
+                    <button id="check-grade-btn" class="btn" style="width: auto; margin-top: 15px;">Cek Nilai</button>
+                `;
+            } else {
+                gradeInfoHTML = `<p>Tugas Anda sedang menunggu penilaian dari pengajar.</p>`;
+            }
+            contentHTML += `<div class="submission-success-view"><i class="fa-solid fa-paper-plane"></i><h3>Tugas Terkirim</h3>${gradeInfoHTML}</div>`;
         } else {
             const deadline = new Date(assignment.deadline);
             const isClosed = new Date() > deadline;
@@ -470,6 +480,22 @@ document.addEventListener('DOMContentLoaded', () => {
         
         detailView.innerHTML = contentHTML;
         detailView.querySelector('.back-to-tugas-view').onclick = renderTugasView;
+        
+        const checkGradeBtn = detailView.querySelector('#check-grade-btn');
+        if (checkGradeBtn) {
+            checkGradeBtn.onclick = () => {
+                const grade = isSubmitted.nilai;
+                const feedback = isSubmitted.feedback || 'Tidak ada feedback.';
+                showModal('Hasil Penilaian', 
+                    `<div style="text-align: left;">
+                        <h4>Nilai Anda:</h4>
+                        <div class="timer-display">${grade}</div>
+                        <h4 style="margin-top: 15px;">Feedback dari Pengajar:</h4>
+                        <p><em>${feedback}</em></p>
+                    </div>`
+                );
+            };
+        }
 
         const submitForm = detailView.querySelector('#submit-form');
         if (submitForm) {
