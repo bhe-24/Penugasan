@@ -397,20 +397,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- LOGIC AUTENTIKASI ---
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(async (user) => {
         showLoading('Mengecek sesi...');
         if (user) {
-            db.collection("users").doc(user.uid).get().then(doc => {
+            try {
+                const docRef = db.collection("users").doc(user.uid);
+                const doc = await docRef.get();
+
                 if (doc.exists) {
-                    currentUserData = { uid: user.uid, ...doc.data() };
+                    let userData = doc.data();
+                    // --- PERBAIKAN: Cek dan perbaiki peran saat login ---
+                    const isSupposedToBeAdmin = user.email.toLowerCase().endsWith('@ac.id');
+                    if (isSupposedToBeAdmin && userData.role !== 'pengajar') {
+                        console.log(`Role mismatch for ${user.email}. Updating role to 'pengajar'.`);
+                        await docRef.update({ role: 'pengajar' });
+                        userData.role = 'pengajar'; // Perbarui data lokal secara langsung
+                    }
+                    // --- Akhir Perbaikan ---
+
+                    currentUserData = { uid: user.uid, ...userData };
                     helpBubble.classList.remove('hidden');
                     renderDashboardView();
                 } else {
-                    showModal('Akun Bermasalah', 'Data akun tidak ditemukan.').then(() => auth.signOut());
+                    await auth.signOut();
+                    showModal('Akun Bermasalah', 'Data akun tidak ditemukan.');
                 }
-            }).catch(err => {
-                showModal('Error', 'Gagal mengambil data akun.').then(() => auth.signOut());
-            });
+            } catch (err) {
+                await auth.signOut();
+                showModal('Error', 'Gagal mengambil data akun.');
+                console.error("Auth state change error:", err);
+            }
         } else {
             currentUserData = null;
             helpBubble.classList.add('hidden');
@@ -431,6 +447,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNGSI RENDER VIEW ---
     function renderDashboardView() {
+        if (!currentUserData) {
+            hideLoading();
+            return;
+        }
         if (currentUserData.role === 'pengajar') {
             document.getElementById('welcome-admin').textContent = `Dasbor Admin: ${currentUserData.name}`;
             updateView('admin-dashboard-view');
@@ -1035,7 +1055,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            submissions.sort((a, b) => a.studentName.localeCompare(b.studentName)).forEach(submission => {
+            submissions.sort((a, b) => (a.studentName || '').localeCompare(b.studentName || '')).forEach(submission => {
                 const card = document.createElement('div');
                 card.className = 'grading-card';
                 
