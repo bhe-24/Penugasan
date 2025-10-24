@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Akademik - Cendekia Aksara</title>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    
+    <!-- CSS (Tidak ada perubahan di sini) -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
@@ -29,7 +26,7 @@
             max-width: 800px; margin: auto; background: var(--white-color); padding: 30px;
             border-radius: var(--border-radius); box-shadow: var(--shadow); overflow: hidden; position: relative;
         }
-        
+
         .header {
             text-align: center; margin-bottom: 30px; padding-bottom: 20px;
             border-bottom: 2px solid var(--light-gray);
@@ -81,12 +78,12 @@
         .dashboard-card.ujian { background-image: linear-gradient(45deg, #f7a04a, #ffc107); }
         .dashboard-card.tugas-akhir { background-image: linear-gradient(45deg, #dc3545, #fd7e14); }
         .dashboard-card.review { background-image: linear-gradient(45deg, #6610f2, #6f42c1); }
-        .dashboard-card.profil { background-image: linear-gradient(45deg, #17a2b8, #20c997); } /* Warna baru untuk profil */
-        .dashboard-card.kelola-profil { background-image: linear-gradient(45deg, #343a40, #6c757d); } /* Warna baru untuk kelola profil */
+        .dashboard-card.profil { background-image: linear-gradient(45deg, #17a2b8, #20c997); }
+        .dashboard-card.kelola-profil { background-image: linear-gradient(45deg, #343a40, #6c757d); }
 
         .item-card, .grading-card {
             border: 1px solid var(--light-gray); padding: 20px; border-radius: var(--border-radius); margin-bottom: 15px;
-            background: #fdfdfd; transition: all 0.3s ease; animation: fadeIn 0.5s ease; position: relative; 
+            background: #fdfdfd; transition: all 0.3s ease; animation: fadeIn 0.5s ease; position: relative;
         }
         .item-card.clickable { cursor: pointer; }
         .item-card.clickable:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); border-left: 5px solid var(--accent-color); }
@@ -112,8 +109,7 @@
         .submission-success-view h3 { color: var(--secondary-color); }
         .submission-success-view p { color: var(--dark-text); font-style: italic; }
         .submission-success-view button { margin-top: 20px; }
-        
-        /* CSS Untuk Halaman Profil */
+
         .profile-info { text-align: center; }
         .profile-pic { width: 120px; height: 120px; border-radius: 50%; background-color: var(--light-gray); margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; font-size: 4em; color: var(--secondary-color); }
         .profile-info h3 { margin: 0; }
@@ -122,25 +118,30 @@
         .profile-details .detail-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--light-gray); }
         .profile-details .detail-item strong { color: var(--dark-text); }
         .profile-details .detail-item span { color: var(--primary-color); font-weight: 600; }
-        
-        /* CSS Untuk Kelola Profil Admin */
+
         #search-user-input {
-             width: 100%; box-sizing: border-box; padding: 12px; 
+             width: 100%; box-sizing: border-box; padding: 12px;
              border: 1px solid #ccc; border-radius: 8px; margin-bottom: 20px;
         }
+        /* Style untuk form tambah siswa */
+        #add-student-form {
+            display: flex; gap: 10px; margin-bottom: 20px; padding: 15px;
+            background-color: var(--light-bg); border-radius: 8px;
+        }
+        #add-student-email { flex-grow: 1; margin-bottom: 0 !important; /* Override form-group margin */ }
+        #add-student-btn { width: auto; flex-shrink: 0; }
+
         .user-profile-card { border: 1px solid var(--light-gray); border-radius: 8px; padding: 15px; margin-bottom: 10px; }
         .user-profile-card h4 { margin: 0 0 10px 0; text-align: left; }
-        /* Modifikasi form group di dalam profile card */
         .user-profile-card .form-group {
             display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
         }
         .user-profile-card .form-group input[type="number"] { width: 80px; }
         .user-profile-card .form-group button { width: auto; }
         .user-profile-card .form-group label {
-            flex-basis: 100px; /* Lebar label */
+            flex-basis: 100px;
             font-weight: 600; margin-bottom: 0;
         }
-
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
@@ -156,14 +157,10 @@
         .modal-footer { text-align: right; }
         .modal-footer button { width: auto; margin-left: 10px; }
 
-        /* Responsive Design for Mobile */
         @media (max-width: 768px) {
             body { padding: 0; }
             .container {
-                box-shadow: none;
-                border-radius: 0;
-                padding: 20px 15px;
-                min-height: 100vh;
+                box-shadow: none; border-radius: 0; padding: 20px 15px; min-height: 100vh;
             }
             .header h1 { font-size: 1.8em; }
             h2 { font-size: 1.4em; }
@@ -173,6 +170,8 @@
             .btn { padding: 14px 20px; }
             .card-header { flex-direction: column; align-items: flex-start; }
             .card-actions { margin-top: 10px; }
+            #add-student-form { flex-direction: column; }
+            #add-student-btn { width: 100%; }
         }
     </style>
 </head>
@@ -186,134 +185,118 @@
         <!-- Tampilan Autentikasi -->
         <div id="auth-view" class="view">
              <div id="login-form-container">
-                <h2>Masuk ke Portal</h2>
-                <form id="login-form">
-                    <div class="form-group"><label for="username">Email</label><input type="email" id="username" required></div>
-                    <div class="form-group"><label for="password">Password</label><input type="password" id="password" required></div>
-                    <button type="submit" class="btn">Login</button>
-                </form>
-                <p class="toggle-auth" id="show-register-link">Belum punya akun? Daftar di sini.</p>
+                 <h2>Masuk ke Portal</h2>
+                 <form id="login-form">
+                     <div class="form-group"><label for="username">Email</label><input type="email" id="username" required></div>
+                     <div class="form-group"><label for="password">Password</label><input type="password" id="password" required></div>
+                     <button type="submit" class="btn">Login</button>
+                 </form>
+                 <p class="toggle-auth" id="show-register-link">Belum punya akun? Daftar di sini.</p>
              </div>
              <div id="register-form-container" class="hidden">
-                <h2>Daftar Akun Baru</h2>
-                <form id="register-form">
-                    <div class="form-group"><label for="register-name">Nama Lengkap</label><input type="text" id="register-name" required></div>
-                    <div class="form-group"><label for="register-email">Email</label><input type="email" id="register-email" required></div>
-                    <div class="form-group"><label for="register-password">Password</label><input type="password" id="register-password" required minlength="6"></div>
-                    <button type="submit" class="btn">Daftar</button>
-                </form>
-                <p class="toggle-auth" id="show-login-link">Sudah punya akun? Masuk di sini.</p>
+                 <h2>Daftar Akun Baru</h2>
+                 <form id="register-form">
+                     <div class="form-group"><label for="register-name">Nama Lengkap</label><input type="text" id="register-name" required></div>
+                     <div class="form-group"><label for="register-email">Email</label><input type="email" id="register-email" required></div>
+                     <div class="form-group"><label for="register-password">Password</label><input type="password" id="register-password" required minlength="6"></div>
+                     <button type="submit" class="btn">Daftar</button>
+                 </form>
+                 <p class="toggle-auth" id="show-login-link">Sudah punya akun? Masuk di sini.</p>
              </div>
         </div>
-        
+
         <!-- Tampilan Dasbor Utama (Siswa) -->
         <div id="dashboard-view" class="view hidden">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                  <h2 id="welcome-user" style="text-align:left; margin:0;"></h2>
                  <button id="logout-btn" class="btn btn-danger btn-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
             </div>
-            <!-- PERUBAHAN: Grid 3 kolom untuk Profil -->
             <div id="main-dashboard-grid" class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr);">
-                <div class="dashboard-card tugas" id="tugas-menu"> <i class="fa-solid fa-pencil-alt"></i> <h3>Tugas Harian</h3> </div>
-                <div class="dashboard-card tugas-akhir" id="tugas-akhir-menu"> <i class="fa-solid fa-book-bookmark"></i> <h3>Proposal Novel</h3> </div>
-                <div class="dashboard-card profil" id="profil-menu"> <i class="fa-solid fa-user"></i> <h3>Profil Saya</h3> </div>
-                
-                <!-- Link Eksternal -->
-                <a href="https://bhe-24.github.io/PortalKuis/" target="_blank" class="dashboard-card kuis"> <i class="fa-solid fa-list-check"></i> <h3>Portal Kuis</h3> </a>
-                <a href="https://bhe-24.github.io/PortalUjian/" target="_blank" class="dashboard-card ujian"> <i class="fa-solid fa-stopwatch"></i> <h3>Portal Ujian</h3> </a>
+                 <div class="dashboard-card tugas" id="tugas-menu"> <i class="fa-solid fa-pencil-alt"></i> <h3>Tugas Harian</h3> </div>
+                 <div class="dashboard-card tugas-akhir" id="tugas-akhir-menu"> <i class="fa-solid fa-book-bookmark"></i> <h3>Proposal Novel</h3> </div>
+                 <div class="dashboard-card profil" id="profil-menu"> <i class="fa-solid fa-user"></i> <h3>Profil Saya</h3> </div>
+                 <a href="https://bhe-24.github.io/PortalKuis/" target="_blank" class="dashboard-card kuis"> <i class="fa-solid fa-list-check"></i> <h3>Portal Kuis</h3> </a>
+                 <a href="https://bhe-24.github.io/PortalUjian/" target="_blank" class="dashboard-card ujian"> <i class="fa-solid fa-stopwatch"></i> <h3>Portal Ujian</h3> </a>
             </div>
         </div>
 
-        <!-- =================================== -->
-        <!-- ====== HALAMAN SISWA ======= -->
-        <!-- =================================== -->
+        <!-- HALAMAN SISWA -->
         <div id="tugas-view" class="view hidden">
             <button class="btn btn-secondary back-to-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
             <h2>Daftar Tugas Harian</h2>
             <div id="assignment-list-siswa"></div>
         </div>
         <div id="task-detail-view" class="view hidden"></div>
-        
-        <!-- Halaman Proposal Novel (Tugas Akhir) -->
         <div id="tugas-akhir-view" class="view hidden">
             <button class="btn btn-secondary back-to-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
             <h2>Pengajuan Proposal Novel</h2>
             <div id="ta-content"></div>
         </div>
-        
-        <!-- Halaman Profil Siswa BARU -->
         <div id="profil-view" class="view hidden">
             <button class="btn btn-secondary back-to-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
             <h2>Profil Saya</h2>
-            <div id="profil-content" class="profile-info item-card">
-                <!-- Konten profil dimuat oleh JavaScript -->
-            </div>
+            <div id="profil-content" class="profile-info item-card"></div>
         </div>
-        
-        <!-- =================================== -->
-        <!-- ====== HALAMAN KHUSUS ADMIN ======= -->
-        <!-- =================================== -->
+
+        <!-- HALAMAN ADMIN -->
         <div id="admin-dashboard-view" class="view hidden">
             <h2 id="welcome-admin" style="text-align:left; margin:0 0 20px 0;"></h2>
             <div class="dashboard-grid">
-                <div class="dashboard-card tugas" id="admin-tugas-menu"> <i class="fa-solid fa-cogs"></i> <h3>Kelola Tugas Harian</h3> </div>
-                <div class="dashboard-card tugas-akhir" id="admin-ta-menu"> <i class="fa-solid fa-book-bookmark"></i> <h3>Review Proposal Novel</h3> </div>
-                <div class="dashboard-card review" id="admin-penilaian-menu"> <i class="fa-solid fa-marker"></i> <h3>Beri Nilai Tugas</h3> </div>
-                <!-- Tombol Kelola Profil BARU -->
-                <div class="dashboard-card kelola-profil" id="admin-profil-menu"> <i class="fa-solid fa-users-cog"></i> <h3>Kelola Profil Siswa</h3> </div>
-                
-                <!-- Link Eksternal Admin -->
-                <a href="https://bhe-24.github.io/PortalKuis/" target="_blank" class="dashboard-card kuis"> <i class="fa-solid fa-list-check"></i> <h3>Kelola Kuis</h3> </a>
-                <a href="https://bhe-24.github.io/PortalUjian/" target="_blank" class="dashboard-card ujian"> <i class="fa-solid fa-file-signature"></i> <h3>Kelola Ujian</h3> </a>
+                 <div class="dashboard-card tugas" id="admin-tugas-menu"> <i class="fa-solid fa-cogs"></i> <h3>Kelola Tugas Harian</h3> </div>
+                 <div class="dashboard-card tugas-akhir" id="admin-ta-menu"> <i class="fa-solid fa-book-bookmark"></i> <h3>Review Proposal Novel</h3> </div>
+                 <div class="dashboard-card review" id="admin-penilaian-menu"> <i class="fa-solid fa-marker"></i> <h3>Beri Nilai Tugas</h3> </div>
+                 <div class="dashboard-card kelola-profil" id="admin-profil-menu"> <i class="fa-solid fa-users-cog"></i> <h3>Kelola Profil Siswa</h3> </div>
+                 <a href="https://bhe-24.github.io/PortalKuis/" target="_blank" class="dashboard-card kuis"> <i class="fa-solid fa-list-check"></i> <h3>Kelola Kuis</h3> </a>
+                 <a href="https://bhe-24.github.io/PortalUjian/" target="_blank" class="dashboard-card ujian"> <i class="fa-solid fa-file-signature"></i> <h3>Kelola Ujian</h3> </a>
             </div>
              <div style="text-align: center; margin-top: 30px;">
-                <button id="admin-logout-btn" class="btn btn-danger" style="width:auto;">Logout</button>
-            </div>
+                 <button id="admin-logout-btn" class="btn btn-danger" style="width:auto;">Logout</button>
+             </div>
         </div>
-
         <div id="admin-tugas-view" class="view hidden">
             <button class="btn btn-secondary back-to-admin-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
             <h2>Kelola Tugas Harian</h2>
             <div id="admin-tugas-harian-list-admin"></div> <hr style="margin: 30px 0;">
             <h3><i class="fa-solid fa-plus-circle"></i> Buat/Edit Tugas</h3>
             <form id="create-assignment-form">
-                <input type="hidden" id="edit-task-id">
-                <div class="form-group"><label for="judul-tugas">Judul Tugas</label><input type="text" id="judul-tugas" required></div>
-                <div class="form-group"><label for="matkul-tugas">Mata Pelajaran</label><input type="text" id="matkul-tugas" required></div>
-                <div class="form-group"><label for="tipe-tugas">Tipe Tugas</label><select id="tipe-tugas"><option value="Esai">Esai</option><option value="Dokumen">Dokumen</option></select></div>
-                <div class="form-group"><label for="instruksi-tugas">Instruksi</label><textarea id="instruksi-tugas" rows="4" required></textarea></div>
-                <div class="form-group"><label for="deadline-tugas">Deadline</label><input type="datetime-local" id="deadline-tugas" required></div>
-                <button type="submit" class="btn btn-success">Simpan Tugas</button>
-                <button type="button" id="cancel-edit-task-btn" class="btn btn-secondary hidden" style="margin-top:10px;">Batal Edit</button>
+                 <input type="hidden" id="edit-task-id">
+                 <div class="form-group"><label for="judul-tugas">Judul Tugas</label><input type="text" id="judul-tugas" required></div>
+                 <div class="form-group"><label for="matkul-tugas">Mata Pelajaran</label><input type="text" id="matkul-tugas" required></div>
+                 <div class="form-group"><label for="tipe-tugas">Tipe Tugas</label><select id="tipe-tugas"><option value="Esai">Esai</option><option value="Dokumen">Dokumen</option></select></div>
+                 <div class="form-group"><label for="instruksi-tugas">Instruksi</label><textarea id="instruksi-tugas" rows="4" required></textarea></div>
+                 <div class="form-group"><label for="deadline-tugas">Deadline</label><input type="datetime-local" id="deadline-tugas" required></div>
+                 <button type="submit" class="btn btn-success">Simpan Tugas</button>
+                 <button type="button" id="cancel-edit-task-btn" class="btn btn-secondary hidden" style="margin-top:10px;">Batal Edit</button>
             </form>
         </div>
-        
         <div id="admin-ta-review-view" class="view hidden">
              <button class="btn btn-secondary back-to-admin-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
              <h2>Review Pengajuan Proposal Novel</h2>
              <div id="ta-review-list"></div>
         </div>
-
         <div id="admin-penilaian-view" class="view hidden">
              <button class="btn btn-secondary back-to-admin-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
              <h2>Beri Nilai Tugas Harian</h2>
              <div class="form-group">
-                <label for="grading-assignment-selector">Pilih Tugas untuk Dinilai:</label>
-                <select id="grading-assignment-selector"></select>
-            </div>
+                 <label for="grading-assignment-selector">Pilih Tugas untuk Dinilai:</label>
+                 <select id="grading-assignment-selector"></select>
+             </div>
             <div id="student-grading-list"></div>
         </div>
-        
-        <!-- Halaman Kelola Profil Siswa BARU -->
         <div id="admin-profil-view" class="view hidden">
             <button class="btn btn-secondary back-to-admin-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
             <h2>Kelola Profil Siswa</h2>
+            <!-- --- FORM TAMBAH SISWA BARU --- -->
+            <form id="add-student-form">
+                 <input type="email" id="add-student-email" class="form-group" placeholder="Masukkan email siswa..." required>
+                 <button type="submit" id="add-student-btn" class="btn btn-sm btn-success"><i class="fa-solid fa-plus"></i> Cari & Tambah Siswa</button>
+            </form>
+            <hr style="margin: 20px 0;">
+            <!-- --- AKHIR FORM --- -->
             <input type="text" id="search-user-input" placeholder="Saring nama atau email siswa...">
-            <div id="user-profile-list" style="max-height: 400px; overflow-y: auto;">
-                <!-- Daftar siswa dimuat di sini -->
-            </div>
+            <div id="user-profile-list" style="max-height: 400px; overflow-y: auto;"></div>
         </div>
-        
+
     </div>
 
     <!-- Elemen UI Tambahan -->
@@ -329,601 +312,703 @@
         </div>
     </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // --- KONFIGURASI FIREBASE ---
-    const firebaseConfig = { apiKey: "AIzaSyDpUWUIzPXIZN6rrNtsIqcL6VfOE2RLVl0", authDomain: "mading-cf676.firebaseapp.com", projectId: "mading-cf676", storageBucket: "mading-cf676.appspot.com", messagingSenderId: "72175203671", appId: "1:72175203671:web:7a0676a55beb64bc96ba12" };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-    
-    // --- VARIABEL GLOBAL ---
-    let currentUserData = null;
-    let studentSubmissions = {};
-    let allStudentsCache = []; // Cache untuk daftar siswa di admin profil
-    
-    // --- ELEMEN DOM ---
-    const loadingOverlay = document.getElementById('loading-overlay');
-    const loadingText = document.getElementById('loading-text');
+<!-- 
+  PERUBAHAN BESAR:
+  1. Skrip Firebase v8 (lama) di <head> telah dihapus.
+  2. Skrip Firebase v11.6.1 (modular, v9+) diimpor di dalam <script type="module"> di bawah ini.
+  3. Semua sintaks JavaScript telah dimigrasi dari v8 (misal: firebase.auth()) ke v9+ (misal: getAuth(), onAuthStateChanged(auth, ...)).
+  4. Path Firestore disesuaikan untuk menggunakan /artifacts/{appId}/public/data/... agar sesuai aturan keamanan.
+  5. Bug di halaman "Kelola Profil Siswa" diperbaiki.
+-->
+<script type="module">
+    // --- [BARU] Impor Firebase v9+ (Modular) ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, getDocs, query, where, orderBy, serverTimestamp, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
-    // --- FUNGSI UTILITAS ---
-    const showLoading = (message) => { loadingText.textContent = message; loadingOverlay.classList.remove('hidden'); };
-    const hideLoading = () => loadingOverlay.classList.add('hidden');
-    const updateView = (targetId) => { 
-        document.querySelectorAll('.view').forEach(v => v.classList.add('hidden')); 
-        const targetView = document.getElementById(targetId);
-        if (targetView) targetView.classList.remove('hidden');
-        else console.error(`View with ID ${targetId} not found.`);
-    };
-
-    // --- CUSTOM MODAL DIALOG ---
-    function showModal(title, text, isConfirm = false) {
-        const modal = document.getElementById('custom-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalBodyContent = document.getElementById('modal-body-content');
-        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
-        const modalCancelBtn = document.getElementById('modal-cancel-btn');
-        modalTitle.textContent = title;
-        modalBodyContent.innerHTML = text;
-        modalCancelBtn.style.display = isConfirm ? 'inline-block' : 'none';
-        modalConfirmBtn.textContent = isConfirm ? 'OK' : 'Tutup';
-        modal.classList.remove('hidden');
-
-        return new Promise(resolve => {
-            modalConfirmBtn.onclick = () => { modal.classList.add('hidden'); resolve(true); };
-            modalCancelBtn.onclick = () => { modal.classList.add('hidden'); resolve(false); };
-        });
-    }
-    
-    // --- LOGIC AUTENTIKASI ---
-    auth.onAuthStateChanged(async (user) => {
-        showLoading('Mengecek sesi...');
-        if (user) {
-            try {
-                const docRef = db.collection("users").doc(user.uid);
-                const doc = await docRef.get();
-
-                if (doc.exists) {
-                    let userData = doc.data();
-                    const isSupposedToBeAdmin = user.email.toLowerCase().endsWith('@ac.id');
-                    if (isSupposedToBeAdmin && userData.role !== 'pengajar') {
-                        await docRef.update({ role: 'pengajar' });
-                        userData.role = 'pengajar'; 
-                    }
-                    
-                    // Inisialisasi data profil jika belum ada
-                    if (userData.role === 'siswa' && (userData.semester === undefined || userData.ips === undefined)) {
-                        await docRef.set({
-                            semester: userData.semester || 1,
-                            ips: userData.ips || 0
-                        }, { merge: true });
-                        userData.semester = userData.semester || 1;
-                        userData.ips = userData.ips || 0;
-                    }
-
-                    currentUserData = { uid: user.uid, ...userData };
-                    renderDashboardView();
-                } else {
-                    await auth.signOut();
-                    showModal('Akun Bermasalah', 'Data akun tidak ditemukan.');
-                }
-            } catch (err) {
-                await auth.signOut();
-                showModal('Error', 'Gagal mengambil data akun.');
-                console.error("Auth state change error:", err);
-            }
-        } else {
-            currentUserData = null;
-            updateView('auth-view');
-            hideLoading();
-        }
-    });
-
-    document.getElementById('show-register-link').onclick = () => { document.getElementById('login-form-container').classList.add('hidden'); document.getElementById('register-form-container').classList.remove('hidden'); };
-    document.getElementById('show-login-link').onclick = () => { document.getElementById('register-form-container').classList.add('hidden'); document.getElementById('login-form-container').classList.remove('hidden'); };
-    document.getElementById('login-form').onsubmit = e => { e.preventDefault(); showLoading('Memverifikasi...'); const email = document.getElementById('username').value; const password = document.getElementById('password').value; auth.signInWithEmailAndPassword(email, password).catch(err => showModal('Login Gagal', 'Kombinasi email dan password tidak cocok.')).finally(() => hideLoading()); };
-    document.getElementById('register-form').onsubmit = e => { e.preventDefault(); showLoading('Mendaftarkan akun...'); const name = document.getElementById('register-name').value; const email = document.getElementById('register-email').value; const password = document.getElementById('register-password').value; const userRole = email.toLowerCase().endsWith('@ac.id') ? 'pengajar' : 'siswa'; auth.createUserWithEmailAndPassword(email, password).then(cred => { const newUser = { name: name, email: email, role: userRole }; return db.collection('users').doc(cred.user.uid).set(newUser); }).then(() => { showModal('Pendaftaran Berhasil', 'Akun telah dibuat. Silakan login.'); document.getElementById('show-login-link').click(); }).catch(err => { let message = 'Terjadi kesalahan.'; if (err.code === 'auth/email-already-in-use') message = 'Email ini sudah terdaftar.'; showModal('Pendaftaran Gagal', message); }).finally(() => hideLoading()); };
-    
-    document.getElementById('logout-btn').onclick = () => auth.signOut();
-    document.getElementById('admin-logout-btn').onclick = () => auth.signOut();
-    document.querySelectorAll('.back-to-dashboard').forEach(btn => btn.onclick = renderDashboardView);
-    document.querySelectorAll('.back-to-admin-dashboard').forEach(btn => btn.onclick = () => updateView('admin-dashboard-view'));
-
-    // --- FUNGSI RENDER VIEW ---
-    function renderDashboardView() {
-        if (!currentUserData) {
-            hideLoading();
-            return;
-        }
-        if (currentUserData.role === 'pengajar') {
-            document.getElementById('welcome-admin').textContent = `Dasbor Admin: ${currentUserData.name}`;
-            updateView('admin-dashboard-view');
-        } else {
-            document.getElementById('welcome-user').textContent = `Selamat Datang, ${currentUserData.name}!`;
-            updateView('dashboard-view');
-        }
-        hideLoading();
-    }
-    
-    // --- EVENT LISTENER MENU SISWA ---
-    document.getElementById('tugas-menu').onclick = () => renderTugasView();
-    document.getElementById('tugas-akhir-menu').onclick = () => renderTugasAkhirView();
-    document.getElementById('profil-menu').onclick = () => renderProfilView(); // BARU
-    // Tombol Kuis & Ujian adalah link <a>, tidak perlu listener JS
-
-    // --- EVENT LISTENER MENU ADMIN ---
-    document.getElementById('admin-tugas-menu').onclick = () => renderAdminTugasView();
-    document.getElementById('admin-ta-menu').onclick = () => renderAdminTaReviewView();
-    document.getElementById('admin-penilaian-menu').onclick = () => renderAdminPenilaianView();
-    document.getElementById('admin-profil-menu').onclick = () => renderAdminProfilView(); // BARU
-    // Tombol Kuis & Ujian Admin adalah link <a>
-
-    // --- FUNGSI HALAMAN SISWA ---
-    async function renderTugasView() {
-        updateView('tugas-view');
-        const listDiv = document.getElementById('assignment-list-siswa');
-        showLoading('Memuat tugas...');
-        try {
-            const assignmentsSnap = await db.collection('assignments').orderBy('createdAt', 'desc').get();
-            const assignments = assignmentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-            const submissionsSnap = await db.collection('submissions').where('studentUid', '==', currentUserData.uid).get();
-            studentSubmissions = {};
-            submissionsSnap.docs.forEach(doc => { studentSubmissions[doc.data().assignmentId] = { id: doc.id, ...doc.data() }; });
-            
-            listDiv.innerHTML = '';
-            if (assignments.length === 0) { listDiv.innerHTML = '<h3>Belum ada tugas saat ini.</h3>'; }
-            else {
-                assignments.forEach(a => {
-                    const card = document.createElement('div');
-                    card.className = 'item-card clickable';
-                    const deadline = new Date(a.deadline);
-                    const isSubmitted = studentSubmissions[a.id];
-                    card.innerHTML = `${isSubmitted ? '<i class="fa-solid fa-check-circle submitted-icon"></i>' : ''}<h3>${a.judul}</h3><p>${a.mapel}</p><p><strong>Deadline:</strong> ${deadline.toLocaleString('id-ID')}</p>`;
-                    card.onclick = () => showTaskDetail(a);
-                    listDiv.appendChild(card);
-                });
-            }
-        } catch(err) { listDiv.innerHTML = '<p>Gagal memuat data tugas.</p>'; console.error(err); }
-        finally { hideLoading(); }
-    }
-    
-    function showTaskDetail(assignment) {
-        updateView('task-detail-view');
-        const detailView = document.getElementById('task-detail-view');
-        const isSubmitted = studentSubmissions[assignment.id];
-
-        let contentHTML = `<button class="btn btn-secondary back-to-tugas-view" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>`;
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- KONFIGURASI FIREBASE ---
+        // Menggunakan config yang Kakak sediakan karena ini sistem auth mandiri
+        const firebaseConfig = { apiKey: "AIzaSyDpUWUIzPXIZN6rrNtsIqcL6VfOE2RLVl0", authDomain: "mading-cf676.firebaseapp.com", projectId: "mading-cf676", storageBucket: "mading-cf676.appspot.com", messagingSenderId: "72175203671", appId: "1:72175203671:web:7a0676a55beb64bc96ba12" };
         
-        if (isSubmitted) {
-            let gradeInfoHTML = '';
-            if (isSubmitted.nilai !== null && isSubmitted.nilai !== undefined && isSubmitted.nilai !== '') {
-                 gradeInfoHTML = `<p>Tugas Anda telah dinilai oleh pengajar.</p><button id="check-grade-btn" class="btn" style="width: auto; margin-top: 15px;">Cek Nilai</button>`;
-            } else {
-                gradeInfoHTML = `<p>Tugas Anda sedang menunggu penilaian dari pengajar.</p>`;
-            }
-            contentHTML += `<div class="submission-success-view"><i class="fa-solid fa-paper-plane"></i><h3>Tugas Terkirim</h3>${gradeInfoHTML}</div>`;
-        } else {
-            const deadline = new Date(assignment.deadline);
-            const isClosed = new Date() > deadline;
-            let formHTML = '';
-            if (isClosed) { formHTML = '<div class="tag tag-gray" style="text-align:center;padding:12px;">Tugas sudah ditutup.</div>'; }
-            else {
-                if (assignment.tipe === 'Esai') { formHTML = `<form id="submit-form"><div class="form-group"><label>Jawaban Esai Anda</label><textarea id="jawaban-teks" rows="10" required></textarea></div><button type="submit" class="btn">Kirim Jawaban</button></form>`; }
-                else if (assignment.tipe === 'Dokumen') { formHTML = `<form id="submit-form"><div class="form-group"><label>Unggah File (Maks 2MB)</label><input type="file" id="jawaban-file" required></div><button type="submit" class="btn">Kirim File</button></form>`; }
-            }
-            contentHTML += `<h2>${assignment.judul}</h2><p><strong>Oleh:</strong> ${assignment.namaPengajar}</p><p><strong>Instruksi:</strong> ${assignment.instruksi}</p><hr>${formHTML}`;
-        }
-        
-        detailView.innerHTML = contentHTML;
-        detailView.querySelector('.back-to-tugas-view').onclick = renderTugasView;
-        
-        const checkGradeBtn = detailView.querySelector('#check-grade-btn');
-        if (checkGradeBtn) {
-            checkGradeBtn.onclick = () => {
-                const grade = isSubmitted.nilai;
-                const feedback = isSubmitted.feedback || 'Tidak ada feedback.';
-                showModal('Hasil Penilaian', `<div style="text-align: left;"><h4>Nilai Anda:</h4><div class="timer-display">${grade}</div><h4 style="margin-top: 15px;">Feedback dari Pengajar:</h4><p><em>${feedback}</em></p></div>`);
-            };
+        // --- [BARU] Inisialisasi v9+ ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // --- [BARU] Ambil App ID dari lingkungan --- (DIHAPUS)
+        // const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id'; (DIHAPUS)
+
+        // --- [BARU] Fungsi helper untuk path Firestore --- (DIHAPUS)
+        // ... (Fungsi getPublicCollection dan getPublicDoc dihapus) ...
+
+
+        // --- VARIABEL GLOBAL ---
+        let currentUserData = null;
+        let studentSubmissions = {};
+        let allStudentsCache = []; // Cache SEMUA siswa
+        let displayedStudents = []; // Siswa yang sedang ditampilkan
+
+        // --- ELEMEN DOM ---
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const loadingText = document.getElementById('loading-text');
+
+        // --- FUNGSI UTILITAS ---
+        const showLoading = (message) => { loadingText.textContent = message; loadingOverlay.classList.remove('hidden'); };
+        const hideLoading = () => loadingOverlay.classList.add('hidden');
+        const updateView = (targetId) => {
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            const targetView = document.getElementById(targetId);
+            if (targetView) targetView.classList.remove('hidden');
+            else console.error(`View with ID ${targetId} not found.`);
+        };
+
+        // --- CUSTOM MODAL DIALOG ---
+        function showModal(title, text, isConfirm = false) {
+            const modal = document.getElementById('custom-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBodyContent = document.getElementById('modal-body-content');
+            const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+            const modalCancelBtn = document.getElementById('modal-cancel-btn');
+            modalTitle.textContent = title;
+            modalBodyContent.innerHTML = text;
+            modalCancelBtn.style.display = isConfirm ? 'inline-block' : 'none';
+            modalConfirmBtn.textContent = isConfirm ? 'OK' : 'Tutup';
+            modal.classList.remove('hidden');
+
+            return new Promise(resolve => {
+                modalConfirmBtn.onclick = () => { modal.classList.add('hidden'); resolve(true); };
+                modalCancelBtn.onclick = () => { modal.classList.add('hidden'); resolve(false); };
+            });
         }
 
-        const submitForm = detailView.querySelector('#submit-form');
-        if (submitForm) {
-            submitForm.onsubmit = async (e) => {
-                e.preventDefault();
-                if (await showModal('Konfirmasi', 'Tugas hanya dapat dikirim SATU KALI. Lanjutkan?', true)) {
-                    showLoading('Mengirim tugas...');
-                    try {
-                        const payload = {
-                            assignmentId: assignment.id, studentUid: currentUserData.uid, studentName: currentUserData.name,
-                            submittedAt: firebase.firestore.FieldValue.serverTimestamp(), nilai: null, feedback: ''
-                        };
-                        if (assignment.tipe === 'Dokumen') {
-                            const file = document.getElementById('jawaban-file').files[0];
-                            if (!file) throw new Error('File belum dipilih.');
-                            if (file.size > 2 * 1024 * 1024) throw new Error('Ukuran file melebihi 2MB.');
-                            const storageRef = storage.ref(`submissions/${assignment.id}/${currentUserData.uid}/${file.name}`);
-                            const uploadTask = await storageRef.put(file);
-                            payload.fileUrl = await uploadTask.ref.getDownloadURL();
-                            payload.fileName = file.name;
-                        } else {
-                            payload.jawabanTeks = document.getElementById('jawaban-teks').value;
+        // --- LOGIC AUTENTIKASI ---
+        // [SINTAKS v9+] Menggunakan onAuthStateChanged(auth, ...)
+        onAuthStateChanged(auth, async (user) => {
+            showLoading('Mengecek sesi...');
+            if (user) {
+                try {
+                    // [PATH v9+] Menggunakan path helper (DIUBAH)
+                    const docRef = doc(db, "users", user.uid); // (DIKEMBALIKAN ke path asli)
+                    // [SINTAKS v9+] Menggunakan getDoc(docRef)
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        let userData = docSnap.data();
+                        const isSupposedToBeAdmin = user.email.toLowerCase().endsWith('@ac.id');
+                        if (isSupposedToBeAdmin && userData.role !== 'pengajar') {
+                            // [SINTAKS v9+] Menggunakan updateDoc(docRef, ...)
+                            await updateDoc(docRef, { role: 'pengajar' });
+                            userData.role = 'pengajar';
                         }
-                        const newSubmission = await db.collection('submissions').add(payload);
-                        studentSubmissions[assignment.id] = { id: newSubmission.id, ...payload };
-                        showTaskDetail(assignment);
-                    } catch (error) { showModal('Error', 'Gagal mengirim tugas. ' + error.message); }
-                    finally { hideLoading(); }
+
+                        if (userData.role === 'siswa' && (userData.semester === undefined || userData.ips === undefined)) {
+                            // [SINTAKS v9+] Menggunakan setDoc(docRef, ..., { merge: true })
+                            await setDoc(docRef, {
+                                semester: userData.semester || 1,
+                                ips: userData.ips || 0
+                            }, { merge: true });
+                            userData.semester = userData.semester || 1;
+                            userData.ips = userData.ips || 0;
+                        }
+
+                        currentUserData = { uid: user.uid, ...userData };
+                        renderDashboardView();
+                    } else {
+                        // [SINTAKS v9+] Menggunakan signOut(auth)
+                        await signOut(auth);
+                        showModal('Akun Bermasalah', 'Data akun tidak ditemukan.');
+                    }
+                } catch (err) {
+                    await signOut(auth);
+                    showModal('Error', 'Gagal mengambil data akun.');
+                    console.error("Auth state change error:", err);
                 }
-            };
+            } else {
+                currentUserData = null;
+                updateView('auth-view');
+                hideLoading();
+            }
+        });
+
+        document.getElementById('show-register-link').onclick = () => { document.getElementById('login-form-container').classList.add('hidden'); document.getElementById('register-form-container').classList.remove('hidden'); };
+        document.getElementById('show-login-link').onclick = () => { document.getElementById('register-form-container').classList.add('hidden'); document.getElementById('login-form-container').classList.remove('hidden'); };
+        
+        document.getElementById('login-form').onsubmit = e => { 
+            e.preventDefault(); 
+            showLoading('Memverifikasi...'); 
+            const email = document.getElementById('username').value; 
+            const password = document.getElementById('password').value; 
+            // [SINTAKS v9+] Menggunakan signInWithEmailAndPassword(auth, ...)
+            signInWithEmailAndPassword(auth, email, password)
+                .catch(err => {
+                    showModal('Login Gagal', 'Kombinasi email dan password tidak cocok.');
+                    hideLoading(); // [FIX] Sembunyikan loading HANYA JIKA GAGAL
+                });
+                // [FIX] .finally() dihapus agar loading tetap menyala saat sukses,
+                // lalu akan diambil alih oleh 'Mengecek sesi...' dari onAuthStateChanged
+        };
+        
+        document.getElementById('register-form').onsubmit = e => { 
+            e.preventDefault(); 
+            showLoading('Mendaftarkan akun...'); 
+            const name = document.getElementById('register-name').value; 
+            const email = document.getElementById('register-email').value; 
+            const password = document.getElementById('register-password').value; 
+            const userRole = email.toLowerCase().endsWith('@ac.id') ? 'pengajar' : 'siswa'; 
+            
+            // [SINTAKS v9+] Menggunakan createUserWithEmailAndPassword(auth, ...)
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(cred => { 
+                    const newUser = { name: name, email: email, role: userRole };
+                    // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                    return setDoc(doc(db, "users", cred.user.uid), newUser); // (DIKEMBALIKAN ke path asli)
+                })
+                .then(() => { 
+                    showModal('Pendaftaran Berhasil', 'Akun telah dibuat. Silakan login.'); 
+                    document.getElementById('show-login-link').click(); 
+                })
+                .catch(err => { 
+                    let message = 'Terjadi kesalahan.'; 
+                    if (err.code === 'auth/email-already-in-use') message = 'Email ini sudah terdaftar.'; 
+                    showModal('Pendaftaran Gagal', message); 
+                })
+                .finally(() => hideLoading()); 
+        };
+
+        // [SINTAKS v9+] Menggunakan signOut(auth)
+        document.getElementById('logout-btn').onclick = () => signOut(auth);
+        document.getElementById('admin-logout-btn').onclick = () => signOut(auth);
+        document.querySelectorAll('.back-to-dashboard').forEach(btn => btn.onclick = renderDashboardView);
+        document.querySelectorAll('.back-to-admin-dashboard').forEach(btn => btn.onclick = () => updateView('admin-dashboard-view'));
+
+        // --- FUNGSI RENDER VIEW ---
+        function renderDashboardView() {
+            if (!currentUserData) { hideLoading(); return; }
+            if (currentUserData.role === 'pengajar') {
+                document.getElementById('welcome-admin').textContent = `Dasbor Admin: ${currentUserData.name}`;
+                updateView('admin-dashboard-view');
+            } else {
+                document.getElementById('welcome-user').textContent = `Selamat Datang, ${currentUserData.name}!`;
+                updateView('dashboard-view');
+            }
+            hideLoading();
         }
-    }
 
-    // --- FUNGSI HALAMAN PROPOSAL NOVEL (TUGAS AKHIR) ---
-    async function renderTugasAkhirView() {
-        updateView('tugas-akhir-view');
-        const contentDiv = document.getElementById('ta-content');
-        showLoading('Memuat data Proposal Novel...');
-        try {
-            const snapshot = await db.collection('final_projects').where('studentUid', '==', currentUserData.uid).limit(1).get();
-            if (snapshot.empty) {
-                // Form Pengajuan
-                contentDiv.innerHTML = `
-                    <p style="text-align: center; margin-bottom: 20px;">Anda belum mengajukan proposal novel. Silakan isi form di bawah ini.</p>
-                    <form id="propose-ta-form">
-                        <div class="form-group"><label for="ta-title">Judul Novel</label><input type="text" id="ta-title" required></div>
-                        <div class="form-group"><label for="ta-sinopsis">Sinopsis</label><textarea id="ta-sinopsis" rows="6" required></textarea></div>
-                        <div class="form-group"><label for="ta-naskah">Unggah Naskah (Opsional, PDF/DOCX, Maks 10MB)</label><input type="file" id="ta-naskah" accept=".pdf,.doc,.docx"></div>
-                        <button type="submit" class="btn">Ajukan Proposal</button>
-                    </form>`;
+        // --- EVENT LISTENER MENU SISWA ---
+        document.getElementById('tugas-menu').onclick = () => renderTugasView();
+        document.getElementById('tugas-akhir-menu').onclick = () => renderTugasAkhirView();
+        document.getElementById('profil-menu').onclick = () => renderProfilView();
+
+        // --- EVENT LISTENER MENU ADMIN ---
+        document.getElementById('admin-tugas-menu').onclick = () => renderAdminTugasView();
+        document.getElementById('admin-ta-menu').onclick = () => renderAdminTaReviewView();
+        document.getElementById('admin-penilaian-menu').onclick = () => renderAdminPenilaianView();
+        document.getElementById('admin-profil-menu').onclick = () => renderAdminProfilView();
+
+        // --- FUNGSI HALAMAN SISWA ---
+        async function renderTugasView() {
+            updateView('tugas-view');
+            const listDiv = document.getElementById('assignment-list-siswa');
+            showLoading('Memuat tugas...');
+            try {
+                // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                const assignmentsQuery = query(collection(db, 'assignments'), orderBy('createdAt', 'desc')); // (DIKEMBALIKAN)
+                const assignmentsSnap = await getDocs(assignmentsQuery);
+                const assignments = assignmentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                const submissionsQuery = query(collection(db, 'submissions'), where('studentUid', '==', currentUserData.uid)); // (DIKEMBALIKAN)
+                const submissionsSnap = await getDocs(submissionsQuery);
                 
-                document.getElementById('propose-ta-form').onsubmit = async (e) => {
-                    e.preventDefault();
-                    if(await showModal('Konfirmasi', 'Yakin ingin mengajukan proposal ini?', true)) {
-                        showLoading('Mengajukan proposal...');
-                        const file = document.getElementById('ta-naskah').files[0];
-                        let fileUrl = null; let fileName = null;
-                        
-                        try {
-                            const payload = { 
-                                title: document.getElementById('ta-title').value, 
-                                sinopsis: document.getElementById('ta-sinopsis').value, 
-                                studentUid: currentUserData.uid, 
-                                studentName: currentUserData.name, 
-                                status: 'Menunggu Review', 
-                                feedback: '', 
-                                submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                                fileUrl: null,
-                                fileName: null
-                            };
+                studentSubmissions = {};
+                submissionsSnap.docs.forEach(doc => { studentSubmissions[doc.data().assignmentId] = { id: doc.id, ...doc.data() }; });
 
-                            if (file) {
-                                if (file.size > 10 * 1024 * 1024) throw new Error('Ukuran file melebihi 10MB.');
-                                const storageRef = storage.ref(`proposals/${currentUserData.uid}/${file.name}`);
-                                const uploadTask = await storageRef.put(file);
-                                payload.fileUrl = await uploadTask.ref.getDownloadURL();
+                listDiv.innerHTML = '';
+                if (assignments.length === 0) { listDiv.innerHTML = '<h3>Belum ada tugas saat ini.</h3>'; }
+                else {
+                    assignments.forEach(a => {
+                        const card = document.createElement('div');
+                        card.className = 'item-card clickable';
+                        const deadline = new Date(a.deadline);
+                        const isSubmitted = studentSubmissions[a.id];
+                        card.innerHTML = `${isSubmitted ? '<i class="fa-solid fa-check-circle submitted-icon"></i>' : ''}<h3>${a.judul}</h3><p>${a.mapel}</p><p><strong>Deadline:</strong> ${deadline.toLocaleString('id-ID')}</p>`;
+                        card.onclick = () => showTaskDetail(a);
+                        listDiv.appendChild(card);
+                    });
+                }
+            } catch(err) { listDiv.innerHTML = '<p>Gagal memuat data tugas.</p>'; console.error(err); }
+            finally { hideLoading(); }
+        }
+
+        function showTaskDetail(assignment) {
+            updateView('task-detail-view');
+            const detailView = document.getElementById('task-detail-view');
+            const isSubmitted = studentSubmissions[assignment.id];
+
+            let contentHTML = `<button class="btn btn-secondary back-to-tugas-view" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>`;
+
+            if (isSubmitted) {
+                let gradeInfoHTML = '';
+                if (isSubmitted.nilai !== null && isSubmitted.nilai !== undefined && isSubmitted.nilai !== '') {
+                     gradeInfoHTML = `<p>Tugas Anda telah dinilai oleh pengajar.</p><button id="check-grade-btn" class="btn" style="width: auto; margin-top: 15px;">Cek Nilai</button>`;
+                } else {
+                     gradeInfoHTML = `<p>Tugas Anda sedang menunggu penilaian dari pengajar.</p>`;
+                }
+                contentHTML += `<div class="submission-success-view"><i class="fa-solid fa-paper-plane"></i><h3>Tugas Terkirim</h3>${gradeInfoHTML}</div>`;
+            } else {
+                const deadline = new Date(assignment.deadline);
+                const isClosed = new Date() > deadline;
+                let formHTML = '';
+                if (isClosed) { formHTML = '<div class="tag tag-gray" style="text-align:center;padding:12px;">Tugas sudah ditutup.</div>'; }
+                else {
+                    if (assignment.tipe === 'Esai') { formHTML = `<form id="submit-form"><div class="form-group"><label>Jawaban Esai Anda</label><textarea id="jawaban-teks" rows="10" required></textarea></div><button type="submit" class="btn">Kirim Jawaban</button></form>`; }
+                    else if (assignment.tipe === 'Dokumen') { formHTML = `<form id="submit-form"><div class="form-group"><label>Unggah File (Maks 2MB)</label><input type="file" id="jawaban-file" required></div><button type="submit" class="btn">Kirim File</button></form>`; }
+                }
+                contentHTML += `<h2>${assignment.judul}</h2><p><strong>Oleh:</strong> ${assignment.namaPengajar}</p><p><strong>Instruksi:</strong> ${assignment.instruksi}</p><hr>${formHTML}`;
+            }
+
+            detailView.innerHTML = contentHTML;
+            detailView.querySelector('.back-to-tugas-view').onclick = renderTugasView;
+
+            const checkGradeBtn = detailView.querySelector('#check-grade-btn');
+            if (checkGradeBtn) {
+                checkGradeBtn.onclick = () => {
+                    const grade = isSubmitted.nilai;
+                    const feedback = isSubmitted.feedback || 'Tidak ada feedback.';
+                    showModal('Hasil Penilaian', `<div style="text-align: left;"><h4>Nilai Anda:</h4><div class="timer-display" style="font-size: 2em; font-weight: bold; color: var(--primary-color);">${grade}</div><h4 style="margin-top: 15px;">Feedback dari Pengajar:</h4><p><em>${feedback}</em></p></div>`);
+                };
+            }
+
+            const submitForm = detailView.querySelector('#submit-form');
+            if (submitForm) {
+                submitForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    if (await showModal('Konfirmasi', 'Tugas hanya dapat dikirim SATU KALI. Lanjutkan?', true)) {
+                        showLoading('Mengirim tugas...');
+                        try {
+                            const payload = {
+                                assignmentId: assignment.id, studentUid: currentUserData.uid, studentName: currentUserData.name,
+                                submittedAt: serverTimestamp(), // [SINTAKS v9+]
+                                nilai: null, feedback: ''
+                            };
+                            if (assignment.tipe === 'Dokumen') {
+                                const file = document.getElementById('jawaban-file').files[0];
+                                if (!file) throw new Error('File belum dipilih.');
+                                if (file.size > 2 * 1024 * 1024) throw new Error('Ukuran file melebihi 2MB.');
+                                
+                                // [SINTAKS v9+] Menggunakan ref(storage, ...)
+                                const storageRef = ref(storage, `submissions/${assignment.id}/${currentUserData.uid}/${file.name}`);
+                                // [SINTAKS v9+] Menggunakan uploadBytes(ref, file)
+                                const uploadTask = await uploadBytes(storageRef, file);
+                                // [SINTAKS v9+] Menggunakan getDownloadURL(ref)
+                                payload.fileUrl = await getDownloadURL(uploadTask.ref);
                                 payload.fileName = file.name;
+                            } else {
+                                payload.jawabanTeks = document.getElementById('jawaban-teks').value;
                             }
-                            
-                            await db.collection('final_projects').add(payload); 
-                            renderTugasAkhirView(); 
-                        } 
-                        catch(err) { showModal('Error', 'Gagal mengajukan proposal. ' + err.message); } 
+                            // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                            const newSubmission = await addDoc(collection(db, 'submissions'), payload); // (DIKEMBALIKAN)
+                            studentSubmissions[assignment.id] = { id: newSubmission.id, ...payload };
+                            showTaskDetail(assignment);
+                        } catch (error) { showModal('Error', 'Gagal mengirim tugas. ' + error.message); }
                         finally { hideLoading(); }
                     }
-                }
-            } else {
-                // Tampilan Status Pengajuan
-                const proposal = {id: snapshot.docs[0].id, ...snapshot.docs[0].data()};
-                let statusTag, statusClass;
-                switch(proposal.status) {
-                    case 'Disetujui': statusClass = 'tag-green'; break;
-                    case 'Revisi': statusClass = 'tag-orange'; break;
-                    default: statusClass = 'tag-gray'; // Menunggu Review
-                }
-                statusTag = `<span class="tag ${statusClass}">${proposal.status}</span>`;
-                
-                let fileHTML = proposal.fileUrl ? `<p><strong>Naskah Terlampir:</strong> <a href="${proposal.fileUrl}" target="_blank" class="btn btn-secondary btn-sm download-link"><i class="fa fa-download"></i> Unduh Naskah</a></p>` : '<p>Tidak ada naskah terlampir.</p>';
-
-                contentDiv.innerHTML = `
-                    <div class="item-card">
-                        <div class="card-header"><h3>${proposal.title}</h3>${statusTag}</div>
-                        <h4>Sinopsis:</h4>
-                        <p>${proposal.sinopsis}</p>
-                        ${fileHTML}
-                        ${proposal.feedback ? `<hr><p><strong>Catatan dari Reviewer:</strong><br><em style="color:var(--dark-text);">${proposal.feedback}</em></p>`: ''}
-                    </div>`;
+                };
             }
-        } catch (err) { contentDiv.innerHTML = '<p>Gagal memuat data proposal.</p>'; console.error(err); } 
-        finally { hideLoading(); }
-    }
-    
-    // --- FUNGSI HALAMAN PROFIL SISWA (BARU) ---
-    function renderProfilView() {
-        updateView('profil-view');
-        const contentDiv = document.getElementById('profil-content');
-        
-        // Buat inisial dari nama
-        const initial = currentUserData.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-        
-        contentDiv.innerHTML = `
-            <div class="profile-pic">${initial}</div>
-            <h3>${currentUserData.name}</h3>
-            <p>${currentUserData.email}</p>
-            <div class="profile-details">
-                <div class="detail-item">
-                    <strong>Semester Saat Ini</strong>
-                    <span>${currentUserData.semester || '1'}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Indeks Penilaian Semester (IPS)</strong>
-                    <span>${currentUserData.ips || '0.00'}</span>
-                </div>
-            </div>
-        `;
-    }
+        }
 
+        async function renderTugasAkhirView() {
+            updateView('tugas-akhir-view');
+            const contentDiv = document.getElementById('ta-content');
+            showLoading('Memuat data Proposal Novel...');
+            try {
+                // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                const q = query(collection(db, 'final_projects'), where('studentUid', '==', currentUserData.uid), limit(1)); // (DIKEMBALIKAN)
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) {
+                    // Form Pengajuan
+                    contentDiv.innerHTML = `
+                        <p style="text-align: center; margin-bottom: 20px;">Anda belum mengajukan proposal novel. Silakan isi form di bawah ini.</p>
+                        <form id="propose-ta-form">
+                            <div class="form-group"><label for="ta-title">Judul Novel</label><input type="text" id="ta-title" required></div>
+                            <div class="form-group"><label for="ta-sinopsis">Sinopsis</label><textarea id="ta-sinopsis" rows="6" required></textarea></div>
+                            <div class="form-group"><label for="ta-naskah">Unggah Naskah (Opsional, PDF/DOCX, Maks 10MB)</label><input type="file" id="ta-naskah" accept=".pdf,.doc,.docx"></div>
+                            <button type="submit" class="btn">Ajukan Proposal</button>
+                        </form>`;
 
-    // --- FUNGSI HALAMAN ADMIN ---
-    
-    // Admin: Kelola Tugas Harian
-    async function renderAdminTugasView() {
-        updateView('admin-tugas-view');
-        document.getElementById('create-assignment-form').reset();
-        document.getElementById('edit-task-id').value = '';
-        document.getElementById('cancel-edit-task-btn').classList.add('hidden');
-        const listDiv = document.getElementById('admin-tugas-harian-list-admin');
-        showLoading('Memuat daftar tugas...');
-        try {
-            const snapshot = await db.collection('assignments').orderBy('createdAt', 'desc').get();
-            listDiv.innerHTML = '<h3>Daftar Tugas Terbit</h3>';
-            if (snapshot.empty) { listDiv.innerHTML += '<p>Belum ada tugas yang dibuat.</p>'; }
-            else {
+                    document.getElementById('propose-ta-form').onsubmit = async (e) => {
+                        e.preventDefault();
+                        if(await showModal('Konfirmasi', 'Yakin ingin mengajukan proposal ini?', true)) {
+                            showLoading('Mengajukan proposal...');
+                            const file = document.getElementById('ta-naskah').files[0];
+                            try {
+                                const payload = {
+                                    title: document.getElementById('ta-title').value,
+                                    sinopsis: document.getElementById('ta-sinopsis').value,
+                                    studentUid: currentUserData.uid,
+                                    studentName: currentUserData.name,
+                                    status: 'Menunggu Review',
+                                    feedback: '',
+                                    submittedAt: serverTimestamp(), // [SINTAKS v9+]
+                                    fileUrl: null,
+                                    fileName: null
+                                };
+
+                                if (file) {
+                                    if (file.size > 10 * 1024 * 1024) throw new Error('Ukuran file melebihi 10MB.');
+                                    // [SINTAKS v9+]
+                                    const storageRef = ref(storage, `proposals/${currentUserData.uid}/${file.name}`);
+                                    const uploadTask = await uploadBytes(storageRef, file);
+                                    payload.fileUrl = await getDownloadURL(uploadTask.ref);
+                                    payload.fileName = file.name;
+                                }
+
+                                // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                                await addDoc(collection(db, 'final_projects'), payload); // (DIKEMBALIKAN)
+                                renderTugasAkhirView();
+                            }
+                            catch(err) { showModal('Error', 'Gagal mengajukan proposal. ' + err.message); }
+                            finally { hideLoading(); }
+                        }
+                    }
+                } else {
+                    // Tampilan Status Pengajuan
+                    const proposal = {id: snapshot.docs[0].id, ...snapshot.docs[0].data()};
+                    let statusClass;
+                    switch(proposal.status) {
+                        case 'Disetujui': statusClass = 'tag-green'; break;
+                        case 'Revisi': statusClass = 'tag-orange'; break;
+                        default: statusClass = 'tag-gray'; // Menunggu Review
+                    }
+                    const statusTag = `<span class="tag ${statusClass}">${proposal.status}</span>`;
+                    const fileHTML = proposal.fileUrl ? `<p><strong>Naskah Terlampir:</strong> <a href="${proposal.fileUrl}" target="_blank" class="btn btn-secondary btn-sm download-link"><i class="fa fa-download"></i> Unduh Naskah</a></p>` : '<p>Tidak ada naskah terlampir.</p>';
+
+                    contentDiv.innerHTML = `
+                        <div class="item-card">
+                            <div class="card-header"><h3>${proposal.title}</h3>${statusTag}</div>
+                            <h4>Sinopsis:</h4>
+                            <p>${proposal.sinopsis}</p>
+                            ${fileHTML}
+                            ${proposal.feedback ? `<hr><p><strong>Catatan dari Reviewer:</strong><br><em style="color:var(--dark-text);">${proposal.feedback}</em></p>`: ''}
+                        </div>`;
+                }
+            } catch (err) { contentDiv.innerHTML = '<p>Gagal memuat data proposal.</p>'; console.error(err); }
+            finally { hideLoading(); }
+        }
+
+        function renderProfilView() {
+            updateView('profil-view');
+            const contentDiv = document.getElementById('profil-content');
+            const initial = currentUserData.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+            contentDiv.innerHTML = `
+                <div class="profile-pic">${initial}</div>
+                <h3>${currentUserData.name}</h3>
+                <p>${currentUserData.email}</p>
+                <div class="profile-details">
+                    <div class="detail-item">
+                        <strong>Semester Saat Ini</strong>
+                        <span>${currentUserData.semester || '1'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Indeks Penilaian Semester (IPS)</strong>
+                        <span>${(parseFloat(currentUserData.ips) || 0).toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- FUNGSI HALAMAN ADMIN ---
+        async function renderAdminTugasView() {
+            updateView('admin-tugas-view');
+            document.getElementById('create-assignment-form').reset();
+            document.getElementById('edit-task-id').value = '';
+            document.getElementById('cancel-edit-task-btn').classList.add('hidden');
+            const listDiv = document.getElementById('admin-tugas-harian-list-admin');
+            showLoading('Memuat daftar tugas...');
+            try {
+                // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                const q = query(collection(db, 'assignments'), orderBy('createdAt', 'desc')); // (DIKEMBALIKAN)
+                const snapshot = await getDocs(q);
+                
+                listDiv.innerHTML = '<h3>Daftar Tugas Terbit</h3>';
+                if (snapshot.empty) { listDiv.innerHTML += '<p>Belum ada tugas yang dibuat.</p>'; }
+                else {
+                    snapshot.docs.forEach(doc => {
+                        const task = {id: doc.id, ...doc.data()};
+                        const card = document.createElement('div');
+                        card.className = 'item-card';
+                        card.innerHTML = `<div class="card-header"><h3>${task.judul}</h3><div class="card-actions"><button class="btn btn-secondary btn-icon btn-sm edit-task" data-id="${task.id}"><i class="fa fa-edit"></i></button><button class="btn btn-danger btn-icon btn-sm delete-task" data-id="${task.id}"><i class="fa fa-trash"></i></button></div></div><p>${task.mapel}</p>`;
+                        listDiv.appendChild(card);
+                    });
+                }
+            } catch(err) { listDiv.innerHTML = '<p>Gagal memuat tugas.</p>'; }
+            finally { hideLoading(); }
+        }
+
+        document.getElementById('create-assignment-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('edit-task-id').value;
+            const payload = {
+                judul: document.getElementById('judul-tugas').value, mapel: document.getElementById('matkul-tugas').value,
+                tipe: document.getElementById('tipe-tugas').value, instruksi: document.getElementById('instruksi-tugas').value,
+                deadline: document.getElementById('deadline-tugas').value, namaPengajar: currentUserData.name,
+            };
+            if (!editId) payload.createdAt = serverTimestamp(); // [SINTAKS v9+]
+            showLoading('Menyimpan tugas...');
+            try {
+                if(editId) {
+                    // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                    await updateDoc(doc(db, 'assignments', editId), payload); // (DIKEMBALIKAN)
+                } else {
+                    // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                    await addDoc(collection(db, 'assignments'), payload); // (DIKEMBALIKAN)
+                }
+                renderAdminTugasView();
+            } catch (err) { showModal('Error', 'Gagal menyimpan tugas.'); }
+            finally { hideLoading(); }
+        };
+
+        document.getElementById('admin-tugas-harian-list-admin').addEventListener('click', async e => {
+            const deleteBtn = e.target.closest('.delete-task');
+            if (deleteBtn) {
+                const taskId = deleteBtn.dataset.id;
+                if (await showModal('Konfirmasi', 'Yakin ingin menghapus tugas ini?', true)) {
+                    showLoading('Menghapus...');
+                    try { 
+                        // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                        await deleteDoc(doc(db, 'assignments', taskId)); // (DIKEMBALIKAN)
+                        renderAdminTugasView(); 
+                    }
+                    catch (err) { showModal('Error', 'Gagal menghapus tugas.'); } finally { hideLoading(); }
+                }
+            }
+            const editBtn = e.target.closest('.edit-task');
+            if (editBtn) {
+                const taskId = editBtn.dataset.id;
+                showLoading('Memuat data tugas...');
+                try {
+                    // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                    const docSnap = await getDoc(doc(db, 'assignments', taskId)); // (DIKEMBALIKAN)
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        document.getElementById('edit-task-id').value = taskId;
+                        document.getElementById('judul-tugas').value = data.judul;
+                        document.getElementById('matkul-tugas').value = data.mapel;
+                        document.getElementById('tipe-tugas').value = data.tipe;
+                        document.getElementById('instruksi-tugas').value = data.instruksi;
+                        document.getElementById('deadline-tugas').value = data.deadline;
+                        document.getElementById('cancel-edit-task-btn').classList.remove('hidden');
+                        window.scrollTo(0, document.body.scrollHeight);
+                    }
+                } catch(err) { showModal('Error', 'Gagal memuat data tugas.'); }
+                finally { hideLoading(); }
+            }
+        });
+
+        document.getElementById('cancel-edit-task-btn').onclick = () => {
+            document.getElementById('create-assignment-form').reset();
+            document.getElementById('edit-task-id').value = '';
+            document.getElementById('cancel-edit-task-btn').classList.add('hidden');
+        };
+
+        async function renderAdminTaReviewView() {
+            updateView('admin-ta-review-view');
+            const listDiv = document.getElementById('ta-review-list');
+            showLoading('Memuat pengajuan...');
+            try {
+                // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                const q = query(collection(db, 'final_projects'), orderBy('submittedAt', 'desc')); // (DIKEMBALIKAN)
+                const snapshot = await getDocs(q);
+
+                listDiv.innerHTML = '';
+                if(snapshot.empty) { listDiv.innerHTML = '<p style="text-align:center;">Belum ada pengajuan proposal novel.</p>'; hideLoading(); return; }
+                
                 snapshot.docs.forEach(doc => {
-                    const task = {id: doc.id, ...doc.data()};
-                    const card = document.createElement('div');
-                    card.className = 'item-card';
-                    card.innerHTML = `<div class="card-header"><h3>${task.judul}</h3><div class="card-actions"><button class="btn btn-secondary btn-icon btn-sm edit-task" data-id="${task.id}"><i class="fa fa-edit"></i></button><button class="btn btn-danger btn-icon btn-sm delete-task" data-id="${task.id}"><i class="fa fa-trash"></i></button></div></div><p>${task.mapel}</p>`;
+                    const proposal = {id: doc.id, ...doc.data()};
+                    let fileHTML = proposal.fileUrl ? `<p><strong>Naskah:</strong> <a href="${proposal.fileUrl}" target="_blank" class="btn btn-secondary btn-sm download-link"><i class="fa fa-download"></i> Unduh</a></p>` : '';
+
+                    const card = document.createElement('div'); card.className = 'item-card'; card.style.cursor = 'default';
+                    card.innerHTML = `
+                        <h3>${proposal.title}</h3>
+                        <p><strong>Oleh:</strong> ${proposal.studentName}</p>
+                        <p><strong>Sinopsis:</strong> ${proposal.sinopsis}</p>
+                        ${fileHTML}
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label>Status:</label>
+                            <select class="status-selector" data-id="${proposal.id}">
+                                <option value="Menunggu Review" ${proposal.status === 'Menunggu Review' ? 'selected' : ''}>Menunggu Review</option>
+                                <option value="Disetujui" ${proposal.status === 'Disetujui' ? 'selected' : ''}>Disetujui</option>
+                                <option value="Revisi" ${proposal.status === 'Revisi' ? 'selected' : ''}>Perlu Revisi</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Catatan/Feedback:</label>
+                            <textarea class="notes-input" rows="3" data-id="${proposal.id}">${proposal.feedback || ''}</textarea>
+                        </div>
+                        <button class="btn btn-success btn-sm save-ta-review" data-id="${proposal.id}" style="width:auto;">Simpan Status</button>`;
                     listDiv.appendChild(card);
                 });
-            }
-        } catch(err) { listDiv.innerHTML = '<p>Gagal memuat tugas.</p>'; }
-        finally { hideLoading(); }
-    }
-    document.getElementById('create-assignment-form').onsubmit = async (e) => {
-        e.preventDefault(); 
-        const editId = document.getElementById('edit-task-id').value;
-        const payload = {
-            judul: document.getElementById('judul-tugas').value, mapel: document.getElementById('matkul-tugas').value,
-            tipe: document.getElementById('tipe-tugas').value, instruksi: document.getElementById('instruksi-tugas').value,
-            deadline: document.getElementById('deadline-tugas').value, namaPengajar: currentUserData.name,
-        };
-        if (!editId) payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-        showLoading('Menyimpan tugas...');
-        try {
-            if(editId) await db.collection('assignments').doc(editId).update(payload);
-            else await db.collection('assignments').add(payload);
-            renderAdminTugasView();
-        } catch (err) { showModal('Error', 'Gagal menyimpan tugas.'); }
-        finally { hideLoading(); }
-    };
-    document.getElementById('admin-tugas-harian-list-admin').addEventListener('click', async e => {
-        const deleteBtn = e.target.closest('.delete-task');
-        if (deleteBtn) {
-            const taskId = deleteBtn.dataset.id;
-            if (await showModal('Konfirmasi', 'Yakin ingin menghapus tugas ini?', true)) {
-                showLoading('Menghapus...');
-                try { await db.collection('assignments').doc(taskId).delete(); renderAdminTugasView(); } 
-                catch (err) { showModal('Error', 'Gagal menghapus tugas.'); } finally { hideLoading(); }
-            }
-        }
-        const editBtn = e.target.closest('.edit-task');
-        if (editBtn) {
-            const taskId = editBtn.dataset.id;
-            showLoading('Memuat data tugas...');
-            try {
-                const doc = await db.collection('assignments').doc(taskId).get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('edit-task-id').value = taskId;
-                    document.getElementById('judul-tugas').value = data.judul;
-                    document.getElementById('matkul-tugas').value = data.mapel;
-                    document.getElementById('tipe-tugas').value = data.tipe;
-                    document.getElementById('instruksi-tugas').value = data.instruksi;
-                    document.getElementById('deadline-tugas').value = data.deadline;
-                    document.getElementById('cancel-edit-task-btn').classList.remove('hidden');
-                    window.scrollTo(0, document.body.scrollHeight);
-                }
-            } catch(err) { showModal('Error', 'Gagal memuat data tugas.'); }
+            } catch (err) { listDiv.innerHTML = '<p>Gagal memuat data.</p>'; }
             finally { hideLoading(); }
         }
-    });
-    document.getElementById('cancel-edit-task-btn').onclick = () => {
-        document.getElementById('create-assignment-form').reset();
-        document.getElementById('edit-task-id').value = '';
-        document.getElementById('cancel-edit-task-btn').classList.add('hidden');
-    };
 
-    // Admin: Review Proposal Novel (Tugas Akhir)
-    async function renderAdminTaReviewView() { 
-        updateView('admin-ta-review-view');
-        const listDiv = document.getElementById('ta-review-list');
-        showLoading('Memuat pengajuan...');
-        try {
-            const snapshot = await db.collection('final_projects').orderBy('submittedAt', 'desc').get();
-            listDiv.innerHTML = '';
-            if(snapshot.empty) { listDiv.innerHTML = '<p style="text-align:center;">Belum ada pengajuan proposal novel.</p>'; return; }
-            snapshot.docs.forEach(doc => {
-                const proposal = {id: doc.id, ...doc.data()};
-                let fileHTML = proposal.fileUrl ? `<p><strong>Naskah:</strong> <a href="${proposal.fileUrl}" target="_blank" class="btn btn-secondary btn-sm download-link"><i class="fa fa-download"></i> Unduh</a></p>` : '';
+        document.getElementById('ta-review-list').addEventListener('click', async e => {
+            if(e.target.classList.contains('save-ta-review')) {
+                const proposalId = e.target.dataset.id;
+                const status = document.querySelector(`.status-selector[data-id="${proposalId}"]`).value;
+                const feedback = document.querySelector(`.notes-input[data-id="${proposalId}"]`).value;
+                showLoading('Menyimpan review...');
+                try {
+                    // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                    await updateDoc(doc(db, 'final_projects', proposalId), { status, feedback }); // (DIKEMBALIKAN)
+                    hideLoading();
+                    showModal('Sukses', 'Status proposal berhasil diperbarui.');
+                }
+                catch (err) { hideLoading(); showModal('Error', 'Gagal menyimpan review.'); }
+            }
+        });
+
+        async function renderAdminPenilaianView() {
+            updateView('admin-penilaian-view');
+            const assignmentSelector = document.getElementById('grading-assignment-selector');
+            const studentGradingList = document.getElementById('student-grading-list');
+            showLoading('Mempersiapkan halaman penilaian...');
+            try {
+                // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                const q = query(collection(db, 'assignments'), orderBy('createdAt', 'desc')); // (DIKEMBALIKAN)
+                const snapshot = await getDocs(q);
                 
-                const card = document.createElement('div'); card.className = 'item-card'; card.style.cursor = 'default';
-                card.innerHTML = `
-                    <h3>${proposal.title}</h3>
-                    <p><strong>Oleh:</strong> ${proposal.studentName}</p>
-                    <p><strong>Sinopsis:</strong> ${proposal.sinopsis}</p>
-                    ${fileHTML}
-                    <div class="form-group" style="margin-top: 15px;">
-                        <label>Status:</label>
-                        <select class="status-selector" data-id="${proposal.id}">
-                            <option value="Menunggu Review" ${proposal.status === 'Menunggu Review' ? 'selected' : ''}>Menunggu Review</option>
-                            <option value="Disetujui" ${proposal.status === 'Disetujui' ? 'selected' : ''}>Disetujui</option>
-                            <option value="Revisi" ${proposal.status === 'Revisi' ? 'selected' : ''}>Perlu Revisi</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Catatan/Feedback:</label>
-                        <textarea class="notes-input" rows="3" data-id="${proposal.id}">${proposal.feedback || ''}</textarea>
-                    </div>
-                    <button class="btn btn-success btn-sm save-ta-review" data-id="${proposal.id}" style="width:auto;">Simpan Status</button>`;
-                listDiv.appendChild(card);
-            });
-        } catch (err) { listDiv.innerHTML = '<p>Gagal memuat data.</p>'; }
-        finally { hideLoading(); }
-    }
-    document.getElementById('ta-review-list').addEventListener('click', async e => {
-        if(e.target.classList.contains('save-ta-review')) {
-            const proposalId = e.target.dataset.id;
-            const status = document.querySelector(`.status-selector[data-id="${proposalId}"]`).value;
-            const feedback = document.querySelector(`.notes-input[data-id="${proposalId}"]`).value;
-            showLoading('Menyimpan review...');
-            try { 
-                await db.collection('final_projects').doc(proposalId).update({ status, feedback }); 
-                hideLoading(); 
-                showModal('Sukses', 'Status proposal berhasil diperbarui.');
-            } 
-            catch (err) { hideLoading(); showModal('Error', 'Gagal menyimpan review.'); }
+                const assignments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                assignmentSelector.innerHTML = '<option value="">-- Pilih Tugas --</option>';
+                assignments.forEach(a => { assignmentSelector.innerHTML += `<option value="${a.id}">${a.judul}</option>`; });
+                studentGradingList.innerHTML = '<p>Silakan pilih tugas untuk memulai penilaian.</p>';
+            } catch(e) { studentGradingList.innerHTML = '<p>Gagal memuat daftar tugas.</p>'; }
+            finally { hideLoading(); }
         }
-    });
-    
-    // Admin: Penilaian Tugas Harian
-    async function renderAdminPenilaianView() {
-        updateView('admin-penilaian-view');
-        const assignmentSelector = document.getElementById('grading-assignment-selector');
-        const studentGradingList = document.getElementById('student-grading-list');
-        showLoading('Mempersiapkan halaman penilaian...');
-        try {
-            const snapshot = await db.collection('assignments').orderBy('createdAt', 'desc').get();
-            const assignments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            assignmentSelector.innerHTML = '<option value="">-- Pilih Tugas --</option>';
-            assignments.forEach(a => { assignmentSelector.innerHTML += `<option value="${a.id}">${a.judul}</option>`; });
-            studentGradingList.innerHTML = '<p>Silakan pilih tugas untuk memulai penilaian.</p>';
-        } catch(e) { studentGradingList.innerHTML = '<p>Gagal memuat daftar tugas.</p>'; } 
-        finally { hideLoading(); }
-    }
-    document.getElementById('grading-assignment-selector').onchange = async (e) => {
-        const assignmentId = e.target.value;
-        const studentGradingList = document.getElementById('student-grading-list');
-        if (!assignmentId) {
-            studentGradingList.innerHTML = '<p>Silakan pilih tugas untuk memulai penilaian.</p>';
-            return;
-        }
-        showLoading('Memuat data jawaban siswa...');
-        try {
-            const submissionsSnap = await db.collection('submissions').where('assignmentId', '==', assignmentId).get();
-            const submissions = submissionsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
-            studentGradingList.innerHTML = '';
-            if (submissions.length === 0) {
-                studentGradingList.innerHTML = '<p>Belum ada siswa yang mengumpulkan tugas ini.</p>';
+
+        document.getElementById('grading-assignment-selector').onchange = async (e) => {
+            const assignmentId = e.target.value;
+            const studentGradingList = document.getElementById('student-grading-list');
+            if (!assignmentId) {
+                studentGradingList.innerHTML = '<p>Silakan pilih tugas untuk memulai penilaian.</p>';
                 return;
             }
-            submissions.sort((a, b) => (a.studentName || '').localeCompare(b.studentName || '')).forEach(submission => {
-                const card = document.createElement('div');
-                card.className = 'grading-card';
-                const isGraded = submission.nilai !== null && submission.nilai !== undefined && submission.nilai !== '';
-                const isDisabled = isGraded ? 'disabled' : '';
-                const buttonText = isGraded ? 'Tersimpan' : 'Simpan Nilai';
-                const buttonClass = isGraded ? 'btn-secondary' : 'btn-success';
-                const statusTag = `<span class="tag ${isGraded ? 'tag-blue' : 'tag-green'}">${isGraded ? 'Sudah Dinilai' : 'Sudah Mengumpulkan'}</span>`;
-                let jawabanHTML = '';
-                if (submission.fileUrl) {
-                    jawabanHTML = `<p><strong>File:</strong> <a href="${submission.fileUrl}" target="_blank" class="btn btn-secondary download-link"><i class="fa fa-download"></i> Unduh (${submission.fileName || 'file'})</a></p>`;
-                } else {
-                    jawabanHTML = `<p><strong>Jawaban:</strong> ${submission.jawabanTeks || '<i>N/A</i>'}</p>`;
-                }
-                card.innerHTML = `
-                    <div class="card-header"><h3>${submission.studentName}</h3>${statusTag}</div>
-                    ${jawabanHTML}
-                    <form class="grading-form" data-submission-id="${submission.id}">
-                        <div class="form-group">
-                            <label>Nilai:</label>
-                            <input type="number" class="nilai-input" min="0" max="100" value="${submission.nilai || ''}" ${isDisabled}>
-                            <label>Feedback:</label>
-                            <textarea rows="2" class="feedback-input" ${isDisabled}>${submission.feedback || ''}</textarea>
-                        </div>
-                        <div class="grading-card-footer">
-                            <button type="submit" class="btn ${buttonClass}" style="width: auto;" ${isDisabled}>${buttonText}</button>
-                        </div>
-                    </form>`;
-                studentGradingList.appendChild(card);
-            });
-        } catch(e) { console.error('Gagal memuat data penilaian:', e); studentGradingList.innerHTML = '<p>Gagal memuat data penilaian.</p>'; } 
-        finally { hideLoading(); }
-    };
-    document.getElementById('student-grading-list').addEventListener('submit', async (e) => {
-        if(e.target.classList.contains('grading-form')) {
-            e.preventDefault();
-            const form = e.target; const submissionId = form.dataset.submissionId;
-            const btn = form.querySelector('button');
-            const payload = { nilai: form.querySelector('.nilai-input').value, feedback: form.querySelector('.feedback-input').value };
-            btn.disabled = true; showLoading('Menyimpan nilai...');
+            showLoading('Memuat data jawaban siswa...');
             try {
-                await db.collection('submissions').doc(submissionId).update(payload);
-                btn.textContent = 'Tersimpan';
-                btn.classList.replace('btn-success', 'btn-secondary');
-                form.querySelector('.nilai-input').disabled = true; form.querySelector('.feedback-input').disabled = true;
-                const tag = form.closest('.grading-card').querySelector('.tag');
-                if (tag) { tag.textContent = 'Sudah Dinilai'; tag.classList.replace('tag-green', 'tag-blue'); }
-            } catch(err) { showModal('Error', 'Gagal menyimpan nilai.'); btn.disabled = false; } 
+                // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                const q = query(collection(db, 'submissions'), where('assignmentId', '==', assignmentId)); // (DIKEMBALIKAN)
+                const submissionsSnap = await getDocs(q);
+                const submissions = submissionsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                studentGradingList.innerHTML = '';
+                if (submissions.length === 0) {
+                    studentGradingList.innerHTML = '<p>Belum ada siswa yang mengumpulkan tugas ini.</p>';
+                    return;
+                }
+                submissions.sort((a, b) => (a.studentName || '').localeCompare(b.studentName || '')).forEach(submission => {
+                    const card = document.createElement('div');
+                    card.className = 'grading-card';
+                    const isGraded = submission.nilai !== null && submission.nilai !== undefined && submission.nilai !== '';
+                    const isDisabled = isGraded ? 'disabled' : '';
+                    const buttonText = isGraded ? 'Tersimpan' : 'Simpan Nilai';
+                    const buttonClass = isGraded ? 'btn-secondary' : 'btn-success';
+                    const statusTag = `<span class="tag ${isGraded ? 'tag-blue' : 'tag-green'}">${isGraded ? 'Sudah Dinilai' : 'Sudah Mengumpulkan'}</span>`;
+                    let jawabanHTML = '';
+                    if (submission.fileUrl) {
+                        jawabanHTML = `<p><strong>File:</strong> <a href="${submission.fileUrl}" target="_blank" class="btn btn-secondary download-link"><i class="fa fa-download"></i> Unduh (${submission.fileName || 'file'})</a></p>`;
+                    } else {
+                        jawabanHTML = `<p><strong>Jawaban:</strong> ${submission.jawabanTeks || '<i>N/A</i>'}</p>`;
+                    }
+                    card.innerHTML = `
+                        <div class="card-header"><h3>${submission.studentName}</h3>${statusTag}</div>
+                        ${jawabanHTML}
+                        <form class="grading-form" data-submission-id="${submission.id}">
+                            <div class="form-group">
+                                <label>Nilai:</label>
+                                <input type="number" class="nilai-input" min="0" max="100" value="${submission.nilai || ''}" ${isDisabled}>
+                                <label>Feedback:</label>
+                                <textarea rows="2" class="feedback-input" ${isDisabled}>${submission.feedback || ''}</textarea>
+                            </div>
+                            <div class="grading-card-footer">
+                                <button type="submit" class="btn ${buttonClass}" style="width: auto;" ${isDisabled}>${buttonText}</button>
+                            </div>
+                        </form>`;
+                    studentGradingList.appendChild(card);
+                });
+            } catch(e) { console.error('Gagal memuat data penilaian:', e); studentGradingList.innerHTML = '<p>Gagal memuat data penilaian.</p>'; }
             finally { hideLoading(); }
-        }
-    });
+        };
 
-    // --- FUNGSI KELOLA PROFIL SISWA (BARU) ---
-    async function renderAdminProfilView() {
-        updateView('admin-profil-view');
-        showLoading('Memuat daftar siswa...');
-        document.getElementById('search-user-input').value = '';
-        const listDiv = document.getElementById('user-profile-list');
-        listDiv.innerHTML = '';
-        
-        try {
-            const snapshot = await db.collection('users').where('role', '==', 'siswa').get();
-            allStudentsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-                .sort((a, b) => a.name.localeCompare(b.name)); // Urutkan berdasarkan nama
-            
-            drawStudentProfileList(allStudentsCache);
-        } catch (err) {
-            listDiv.innerHTML = '<p>Gagal memuat daftar siswa.</p>';
-        } finally {
-            hideLoading();
-        }
-    }
-    
-    // Fungsi untuk menggambar daftar siswa (digunakan oleh load awal dan filter)
-    function drawStudentProfileList(users) {
-        const listDiv = document.getElementById('user-profile-list');
-        listDiv.innerHTML = '';
-        
-        if (users.length === 0) {
-            listDiv.innerHTML = '<p>Tidak ada siswa yang cocok.</p>';
-            return;
+        document.getElementById('student-grading-list').addEventListener('submit', async (e) => {
+            if(e.target.classList.contains('grading-form')) {
+                e.preventDefault();
+                const form = e.target; const submissionId = form.dataset.submissionId;
+                const btn = form.querySelector('button');
+                const payload = { nilai: form.querySelector('.nilai-input').value, feedback: form.querySelector('.feedback-input').value };
+                btn.disabled = true; showLoading('Menyimpan nilai...');
+                try {
+                    // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                    await updateDoc(doc(db, 'submissions', submissionId), payload); // (DIKEMBALIKAN)
+                    
+                    btn.textContent = 'Tersimpan';
+                    btn.classList.replace('btn-success', 'btn-secondary');
+                    form.querySelector('.nilai-input').disabled = true; form.querySelector('.feedback-input').disabled = true;
+                    const tag = form.closest('.grading-card').querySelector('.tag');
+                    if (tag) { tag.textContent = 'Sudah Dinilai'; tag.classList.replace('tag-green', 'tag-blue'); }
+                } catch(err) { showModal('Error', 'Gagal menyimpan nilai.'); btn.disabled = false; }
+                finally { hideLoading(); }
+            }
+        });
+
+        // --- FUNGSI KELOLA PROFIL SISWA (DIMODIFIKASI & DIPERBAIKI) ---
+        async function renderAdminProfilView() {
+            updateView('admin-profil-view');
+            showLoading('Memuat daftar siswa...');
+            document.getElementById('search-user-input').value = '';
+            document.getElementById('add-student-form').reset();
+            const listDiv = document.getElementById('user-profile-list');
+            listDiv.innerHTML = '';
+
+            try {
+                // 1. Ambil SEMUA siswa dari DB
+                // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                const q = query(collection(db, 'users'), where('role', '==', 'siswa')); // (DIKEMBALIKAN)
+                const snapshot = await getDocs(q);
+
+                // 2. Simpan SEMUA siswa ke cache utama
+                allStudentsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                    .sort((a, b) => a.name.localeCompare(b.name));
+
+                // 3. [FIX] Tampilkan SEMUA siswa (bukan hanya yg punya nilai UTS)
+                displayedStudents = [...allStudentsCache]; // Salin cache utama ke cache tampilan
+
+                // 4. Gambar daftar siswa
+                drawStudentProfileList(displayedStudents);
+            } catch (err) {
+                 listDiv.innerHTML = '<p>Gagal memuat daftar siswa.</p>';
+                 console.error("Error loading student profiles:", err);
+            } finally {
+                hideLoading();
+            }
         }
 
-        users.forEach(user => {
+        // Fungsi untuk membuat KARTU profil siswa (tidak berubah)
+        function createStudentProfileCard(user) {
             const card = document.createElement('div');
             card.className = 'user-profile-card';
-            
-            // Definisikan nilai default agar tidak 'undefined' di HTML
+            card.id = `profile-card-${user.id}`; // Tambahkan ID unik
+
             const nilai = {
-                t1: user.nilai_t1 || '', t2: user.nilai_t2 || '', t3: user.nilai_t3 || '', t4: user.nilai_t4 || '',
-                t5: user.nilai_t5 || '', t6: user.nilai_t6 || '', t7: user.nilai_t7 || '', t8: user.nilai_t8 || '',
-                uts: user.nilai_uts || '', uas: user.nilai_uas || ''
+                t1: user.nilai_t1 ?? '', t2: user.nilai_t2 ?? '', t3: user.nilai_t3 ?? '', t4: user.nilai_t4 ?? '',
+                t5: user.nilai_t5 ?? '', t6: user.nilai_t6 ?? '', t7: user.nilai_t7 ?? '', t8: user.nilai_t8 ?? '',
+                uts: user.nilai_uts ?? '', uas: user.nilai_uas ?? ''
             };
 
-            // HTML Baru untuk form profil
             card.innerHTML = `
                 <h4>${user.name}</h4>
                 <p>${user.email}</p>
@@ -950,106 +1035,232 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="form-group" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
                         <button type="button" class="btn btn-secondary btn-sm hitung-rata-rata" style="width: auto;">Hitung Rata-rata</button>
                         <label style="flex-shrink: 0; margin-left: 10px; font-weight: 600;">Hasil IPS (0-4.00):</label>
-                        <input type="text" class="ips-display" value="${user.ips || 0.00}" readonly style="font-weight: bold; background-color: #eee; width: 80px;">
+                        <input type="text" class="ips-display" value="${(parseFloat(user.ips) || 0).toFixed(2)}" readonly style="font-weight: bold; background-color: #eee; width: 80px;">
                         <button type="submit" class="btn btn-success btn-sm" style="width: auto; margin-left: auto;">Simpan Perubahan</button>
                     </div>
                 </form>
             `;
-            listDiv.appendChild(card);
-        });
-    }
+            return card;
+        }
 
-    // Listener untuk filter pencarian (BARU)
-    document.getElementById('search-user-input').onkeyup = (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filteredStudents = allStudentsCache.filter(user => 
-            user.name.toLowerCase().includes(searchTerm) || 
-            user.email.toLowerCase().includes(searchTerm)
-        );
-        drawStudentProfileList(filteredStudents);
-    };
-    
-    // --- LISTENER BARU UNTUK KELOLA PROFIL ---
-    
-    // Listener untuk tombol "Hitung Rata-rata"
-    document.getElementById('user-profile-list').addEventListener('click', (e) => {
-        if (e.target.classList.contains('hitung-rata-rata')) {
-            e.preventDefault();
-            const form = e.target.closest('.profile-update-form');
-            if (!form) return;
+        // Fungsi untuk MENGGAMBAR ULANG list siswa (dipanggil load awal, filter, dan tambah manual)
+        function drawStudentProfileList(usersToDraw) {
+            const listDiv = document.getElementById('user-profile-list');
+            listDiv.innerHTML = ''; // Kosongkan dulu
 
-            const nilaiInputs = form.querySelectorAll('.nilai-input');
-            let totalNilai = 0;
-            let jumlahNilai = 0;
-
-            nilaiInputs.forEach(input => {
-                const nilai = parseFloat(input.value);
-                if (!isNaN(nilai) && input.value.trim() !== '') {
-                    totalNilai += nilai;
-                    jumlahNilai++;
+            if (usersToDraw.length === 0) {
+                const searchTerm = document.getElementById('search-user-input').value;
+                if (searchTerm) {
+                    listDiv.innerHTML = '<p>Tidak ada siswa yang cocok dengan filter pencarian.</p>';
+                } else {
+                    // [FIX] Pesan diubah karena sekarang menampilkan semua
+                    listDiv.innerHTML = '<p>Belum ada siswa di database. Gunakan form di atas untuk menambahkan siswa secara manual.</p>'; 
                 }
+                return;
+            }
+
+            usersToDraw.forEach(user => {
+                const cardElement = createStudentProfileCard(user);
+                listDiv.appendChild(cardElement);
             });
-
-            // Rata-rata dihitung dari nilai 0-100
-            const rataRata = (jumlahNilai > 0) ? (totalNilai / jumlahNilai) : 0;
-            // Konversi ke skala IPS 4.00
-            const ips = (rataRata / 100) * 4; 
-
-            const ipsDisplay = form.querySelector('.ips-display');
-            if (ipsDisplay) {
-                ipsDisplay.value = ips.toFixed(2);
-            }
         }
-    });
 
-    // Listener untuk simpan data profil (DIMODIFIKASI)
-    document.getElementById('user-profile-list').addEventListener('submit', async (e) => {
-        if(e.target.classList.contains('profile-update-form')) {
+        // [FIX] Pencarian sekarang memfilter dari cache utama (allStudentsCache)
+        document.getElementById('search-user-input').onkeyup = (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            // Filter dari master list (allStudentsCache)
+            const filteredStudents = allStudentsCache.filter(user =>
+                user.name.toLowerCase().includes(searchTerm) ||
+                user.email.toLowerCase().includes(searchTerm)
+            );
+            
+            // Perbarui daftar yang ditampilkan
+            displayedStudents = filteredStudents; 
+            drawStudentProfileList(filteredStudents); // Gambar ulang list yang sudah difilter
+        };
+
+        // --- LISTENER FORM TAMBAH SISWA BARU (Logika tidak berubah, hanya path DB) ---
+        document.getElementById('add-student-form').onsubmit = async (e) => {
             e.preventDefault();
-            const form = e.target;
-            const uid = form.dataset.uid;
-            const btn = form.querySelector('button[type="submit"]');
-            
-            const nilaiInputs = form.querySelectorAll('.nilai-input');
-            
-            const payload = {
-                semester: parseInt(form.querySelector('.semester-input').value) || 1,
-                ips: parseFloat(form.querySelector('.ips-display').value).toFixed(2) || 0.00,
-                
-                // Simpan 10 nilai (gunakan 'null' jika kosong)
-                nilai_t1: parseFloat(nilaiInputs[0].value) || null,
-                nilai_t2: parseFloat(nilaiInputs[1].value) || null,
-                nilai_t3: parseFloat(nilaiInputs[2].value) || null,
-                nilai_t4: parseFloat(nilaiInputs[3].value) || null,
-                nilai_t5: parseFloat(nilaiInputs[4].value) || null,
-                nilai_t6: parseFloat(nilaiInputs[5].value) || null,
-                nilai_t7: parseFloat(nilaiInputs[6].value) || null,
-                nilai_t8: parseFloat(nilaiInputs[7].value) || null,
-                nilai_uts: parseFloat(nilaiInputs[8].value) || null,
-                nilai_uas: parseFloat(nilaiInputs[9].value) || null,
-            };
-            
-            showLoading('Menyimpan data...');
-            btn.disabled = true;
-            try {
-                await db.collection('users').doc(uid).update(payload);
-                
-                // Update cache lokal agar data tetap sinkron
-                const userInCache = allStudentsCache.find(u => u.id === uid);
-                if(userInCache) {
-                    Object.assign(userInCache, payload);
-                }
-                showModal('Sukses', 'Data profil siswa berhasil diperbarui.');
-            } catch (err) {
-                showModal('Error', 'Gagal memperbarui data.');
-            } finally {
-                hideLoading();
-                btn.disabled = false;
-            }
-        }
-    });
+            const emailToAdd = document.getElementById('add-student-email').value.trim().toLowerCase();
+            if (!emailToAdd) return;
 
-});
+            showLoading('Mencari siswa...');
+            try {
+                // 1. Cek apakah sudah ada di daftar yang TAMPIL (displayedStudents)
+                const isAlreadyDisplayed = displayedStudents.some(student => student.email.toLowerCase() === emailToAdd);
+                if (isAlreadyDisplayed) {
+                    hideLoading();
+                    const existingStudent = allStudentsCache.find(s => s.email.toLowerCase() === emailToAdd);
+                    showModal('Info', `Siswa dengan email ${emailToAdd} sudah ada dalam daftar.`);
+                    if (existingStudent) {
+                        const cardElement = document.getElementById(`profile-card-${existingStudent.id}`);
+                        if (cardElement) {
+                             cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                             cardElement.style.backgroundColor = '#fff3cd';
+                             setTimeout(() => { cardElement.style.backgroundColor = ''; }, 2000);
+                        }
+                    }
+                    return;
+                }
+
+                // 2. Cari di database (gunakan cache utama jika memungkinkan)
+                let foundStudent = allStudentsCache.find(s => s.email.toLowerCase() === emailToAdd);
+                if (!foundStudent) {
+                    // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                    // [FIX] Hapus 'where role' agar bisa menemukan siswa yang role-nya kosong
+                    const q = query(collection(db, 'users'), where('email', '==', emailToAdd), limit(1)); // (DIKEMBALIKAN + MODIFIKASI)
+                    const snapshot = await getDocs(q);
+
+                    if (snapshot.empty) {
+                        hideLoading();
+                        showModal('Error', `Siswa dengan email ${emailToAdd} tidak ditemukan di database.`);
+                        return;
+                    }
+                    
+                    foundStudent = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+                    
+                    // --- [FIX BARU] Cek role sebelum menambahkan ---
+                    if (foundStudent.role === 'pengajar') {
+                        hideLoading();
+                        showModal('Info', `Tidak dapat menambahkan ${foundStudent.name}. Ini adalah akun pengajar.`);
+                        return;
+                    }
+
+                    // [FIX BARU] Jika role-nya BUKAN siswa (misal: kosong), update di database
+                    if (foundStudent.role !== 'siswa') {
+                        showLoading('Memperbarui role siswa...');
+                        const userDocRef = doc(db, 'users', foundStudent.id);
+                        // Pastikan data semester dan ips default juga di-set jika belum ada
+                        await updateDoc(userDocRef, { 
+                            role: 'siswa',
+                            semester: foundStudent.semester || 1,
+                            ips: foundStudent.ips || 0
+                        });
+                        foundStudent.role = 'siswa'; // Update data lokal
+                        foundStudent.semester = foundStudent.semester || 1;
+                        foundStudent.ips = foundStudent.ips || 0;
+                    }
+                    // --- AKHIR FIX ---
+
+                    if (!allStudentsCache.some(s => s.id === foundStudent.id)) {
+                        allStudentsCache.push(foundStudent);
+                        allStudentsCache.sort((a, b) => a.name.localeCompare(b.name));
+                    }
+                }
+
+                // 3. Tambahkan ke daftar yang TAMPIL (displayedStudents) dan gambar ulang
+                displayedStudents.push(foundStudent);
+                displayedStudents.sort((a, b) => a.name.localeCompare(b.name));
+
+                drawStudentProfileList(displayedStudents);
+                hideLoading();
+                showModal('Sukses', `Siswa ${foundStudent.name} berhasil ditambahkan ke daftar.`);
+                document.getElementById('add-student-form').reset();
+
+                const newCardElement = document.getElementById(`profile-card-${foundStudent.id}`);
+                if (newCardElement) {
+                    newCardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    newCardElement.style.backgroundColor = '#d1e7dd';
+                    setTimeout(() => { newCardElement.style.backgroundColor = ''; }, 2000);
+                }
+
+            } catch (err) {
+                hideLoading();
+                showModal('Error', 'Gagal mencari atau menambahkan siswa.');
+                console.error("Error adding student:", err);
+            }
+        };
+
+        // --- LISTENER UNTUK KELOLA PROFIL (Logika tidak berubah, hanya path DB) ---
+        document.getElementById('user-profile-list').addEventListener('click', (e) => {
+            if (e.target.classList.contains('hitung-rata-rata')) {
+                e.preventDefault();
+                const form = e.target.closest('.profile-update-form');
+                if (!form) return;
+
+                const nilaiInputs = form.querySelectorAll('.nilai-input');
+                let totalNilai = 0;
+                let jumlahNilai = 0;
+
+                nilaiInputs.forEach(input => {
+                    const nilai = parseFloat(input.value);
+                    if (!isNaN(nilai) && input.value.trim() !== '') {
+                        totalNilai += nilai;
+                        jumlahNilai++;
+                    }
+                });
+
+                const rataRata = (jumlahNilai > 0) ? (totalNilai / jumlahNilai) : 0;
+                const ips = (rataRata / 100) * 4;
+
+                const ipsDisplay = form.querySelector('.ips-display');
+                if (ipsDisplay) {
+                    ipsDisplay.value = ips.toFixed(2);
+                }
+            }
+        });
+
+        document.getElementById('user-profile-list').addEventListener('submit', async (e) => {
+            if(e.target.classList.contains('profile-update-form')) {
+                e.preventDefault();
+                const form = e.target;
+                const uid = form.dataset.uid;
+                const btn = form.querySelector('button[type="submit"]');
+
+                const nilaiInputs = form.querySelectorAll('.nilai-input');
+                const calculatedIPS = parseFloat(form.querySelector('.ips-display').value) || 0.00;
+
+                const payload = {
+                    semester: parseInt(form.querySelector('.semester-input').value) || 1,
+                    ips: calculatedIPS, // Gunakan IPS dari display
+
+                    nilai_t1: nilaiInputs[0].value.trim() === '' ? null : parseFloat(nilaiInputs[0].value),
+                    nilai_t2: nilaiInputs[1].value.trim() === '' ? null : parseFloat(nilaiInputs[1].value),
+                    nilai_t3: nilaiInputs[2].value.trim() === '' ? null : parseFloat(nilaiInputs[2].value),
+                    nilai_t4: nilaiInputs[3].value.trim() === '' ? null : parseFloat(nilaiInputs[3].value),
+                    nilai_t5: nilaiInputs[4].value.trim() === '' ? null : parseFloat(nilaiInputs[4].value),
+                    nilai_t6: nilaiInputs[5].value.trim() === '' ? null : parseFloat(nilaiInputs[5].value),
+                    nilai_t7: nilaiInputs[6].value.trim() === '' ? null : parseFloat(nilaiInputs[6].value),
+                    nilai_t8: nilaiInputs[7].value.trim() === '' ? null : parseFloat(nilaiInputs[7].value),
+                    nilai_uts: nilaiInputs[8].value.trim() === '' ? null : parseFloat(nilaiInputs[8].value),
+                    nilai_uas: nilaiInputs[9].value.trim() === '' ? null : parseFloat(nilaiInputs[9].value),
+                };
+
+                showLoading('Menyimpan data...');
+                btn.disabled = true;
+                try {
+                    // [PATH v9+ & SINTAKS v9+] (DIUBAH)
+                    await updateDoc(doc(db, 'users', uid), payload); // (DIKEMBALIKAN)
+
+                    // Update data di cache utama (allStudentsCache)
+                    const userInAllCache = allStudentsCache.find(u => u.id === uid);
+                    if(userInAllCache) {
+                        Object.assign(userInAllCache, payload, { ips: parseFloat(calculatedIPS) }); // pastikan ips adalah number
+                    }
+                    // Update juga data di cache yang ditampilkan (displayedStudents)
+                     const userInDisplayedCache = displayedStudents.find(u => u.id === uid);
+                    if(userInDisplayedCache) {
+                        Object.assign(userInDisplayedCache, payload, { ips: parseFloat(calculatedIPS) });
+                    }
+
+                    showModal('Sukses', 'Data profil siswa berhasil diperbarui.');
+                } catch (err) {
+                    showModal('Error', 'Gagal memperbarui data.');
+                     console.error("Error saving profile:", err);
+                } finally {
+                    hideLoading();
+                    btn.disabled = false;
+                }
+            }
+        });
+
+    });
 </script>
 </body>
 </html>
+
+
+
+
