@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Penugasan - Cendekia Aksara</title>
+    <title>Portal Akademik - Cendekia Aksara</title>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -46,7 +46,7 @@
         .btn {
             display: inline-block; width: 100%; padding: 12px 20px; border: none;
             border-radius: 8px; color: var(--white-color); background-color: var(--primary-color);
-            font-weight: 600; cursor: pointer; text-align: center; transition: all 0.3s ease; box-sizing: border-box;
+            font-weight: 600; cursor: pointer; text-align: center; transition: all 0.3s ease; box-sizing: border-box; text-decoration: none;
         }
         .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 90, 156, 0.3); }
         .btn:disabled { background-color: var(--gray-color); cursor: not-allowed; }
@@ -71,7 +71,7 @@
         .dashboard-card {
             background-color: var(--secondary-color); color: var(--white-color);
             padding: 30px; border-radius: var(--border-radius); text-align: center;
-            cursor: pointer; transition: all 0.3s ease;
+            cursor: pointer; transition: all 0.3s ease; text-decoration: none;
         }
         .dashboard-card:hover { transform: translateY(-5px) scale(1.03); box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15); }
         .dashboard-card i { font-size: 3em; margin-bottom: 15px; }
@@ -81,6 +81,8 @@
         .dashboard-card.ujian { background-image: linear-gradient(45deg, #f7a04a, #ffc107); }
         .dashboard-card.tugas-akhir { background-image: linear-gradient(45deg, #dc3545, #fd7e14); }
         .dashboard-card.review { background-image: linear-gradient(45deg, #6610f2, #6f42c1); }
+        .dashboard-card.profil { background-image: linear-gradient(45deg, #17a2b8, #20c997); } /* Warna baru untuk profil */
+        .dashboard-card.kelola-profil { background-image: linear-gradient(45deg, #343a40, #6c757d); } /* Warna baru untuk kelola profil */
 
         .item-card, .grading-card {
             border: 1px solid var(--light-gray); padding: 20px; border-radius: var(--border-radius); margin-bottom: 15px;
@@ -105,24 +107,39 @@
         .grading-card-footer { text-align: right; }
         .download-link { padding: 5px 10px; font-size: 0.9em; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
 
-        .timer-display { font-size: 2em; font-weight: 700; color: var(--secondary-color); text-align: center; margin: 10px 0; background: var(--light-gray); padding: 10px; border-radius: 8px; }
-
-        #question-builder { border: 1px solid var(--light-gray); padding: 20px; border-radius: var(--border-radius); margin-top: 20px; }
-        .question-option { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .question-option input[type="radio"] { flex-shrink: 0; }
-        .question-option input[type="text"] { flex-grow: 1; }
-        .added-question { background: var(--light-bg); padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-
         .submission-success-view { text-align: center; padding: 40px 20px; border: 2px dashed var(--success-color); border-radius: var(--border-radius); background-color: #f8fdfd; }
         .submission-success-view i { font-size: 3em; color: var(--success-color); margin-bottom: 20px; }
         .submission-success-view h3 { color: var(--secondary-color); }
         .submission-success-view p { color: var(--dark-text); font-style: italic; }
         .submission-success-view button { margin-top: 20px; }
-
-        .kuis-question-container .form-group { margin-bottom: 15px; }
-        .kuis-question-container .form-group label { display: block; padding: 15px; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; }
-        .kuis-question-container .form-group input[type="radio"]:checked + label { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
-        .kuis-question-container .form-group input[type="radio"] { display: none; }
+        
+        /* CSS Untuk Halaman Profil */
+        .profile-info { text-align: center; }
+        .profile-pic { width: 120px; height: 120px; border-radius: 50%; background-color: var(--light-gray); margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; font-size: 4em; color: var(--secondary-color); }
+        .profile-info h3 { margin: 0; }
+        .profile-info p { color: var(--gray-color); margin-bottom: 25px; }
+        .profile-details { text-align: left; }
+        .profile-details .detail-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--light-gray); }
+        .profile-details .detail-item strong { color: var(--dark-text); }
+        .profile-details .detail-item span { color: var(--primary-color); font-weight: 600; }
+        
+        /* CSS Untuk Kelola Profil Admin */
+        #search-user-input {
+             width: 100%; box-sizing: border-box; padding: 12px; 
+             border: 1px solid #ccc; border-radius: 8px; margin-bottom: 20px;
+        }
+        .user-profile-card { border: 1px solid var(--light-gray); border-radius: 8px; padding: 15px; margin-bottom: 10px; }
+        .user-profile-card h4 { margin: 0 0 10px 0; text-align: left; }
+        /* Modifikasi form group di dalam profile card */
+        .user-profile-card .form-group {
+            display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+        }
+        .user-profile-card .form-group input[type="number"] { width: 80px; }
+        .user-profile-card .form-group button { width: auto; }
+        .user-profile-card .form-group label {
+            flex-basis: 100px; /* Lebar label */
+            font-weight: 600; margin-bottom: 0;
+        }
 
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -138,22 +155,6 @@
         .modal-body { margin-bottom: 20px; }
         .modal-footer { text-align: right; }
         .modal-footer button { width: auto; margin-left: 10px; }
-
-        .results-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .results-table th, .results-table td { border: 1px solid var(--light-gray); padding: 8px 12px; text-align: left; }
-        .results-table th { background-color: var(--light-bg); font-weight: 600; }
-        .results-table tr:nth-child(even) { background-color: #f9f9f9; }
-
-        .help-bubble {
-            position: fixed; bottom: 20px; right: 20px;
-            width: 55px; height: 55px; border-radius: 50%;
-            background-color: var(--accent-color); color: white;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 1.8em; border: none; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            z-index: 1000; transition: transform 0.3s ease;
-        }
-        .help-bubble:hover { transform: scale(1.1); }
 
         /* Responsive Design for Mobile */
         @media (max-width: 768px) {
@@ -173,7 +174,6 @@
             .card-header { flex-direction: column; align-items: flex-start; }
             .card-actions { margin-top: 10px; }
         }
-
     </style>
 </head>
 <body>
@@ -212,11 +212,15 @@
                  <h2 id="welcome-user" style="text-align:left; margin:0;"></h2>
                  <button id="logout-btn" class="btn btn-danger btn-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
             </div>
-            <div id="main-dashboard-grid" class="dashboard-grid">
+            <!-- PERUBAHAN: Grid 3 kolom untuk Profil -->
+            <div id="main-dashboard-grid" class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr);">
                 <div class="dashboard-card tugas" id="tugas-menu"> <i class="fa-solid fa-pencil-alt"></i> <h3>Tugas Harian</h3> </div>
-                <div class="dashboard-card kuis" id="kuis-menu"> <i class="fa-solid fa-list-check"></i> <h3>Kuis</h3> </div>
-                <div class="dashboard-card ujian" id="ujian-menu"> <i class="fa-solid fa-stopwatch"></i> <h3>Ujian</h3> </div>
-                <div class="dashboard-card tugas-akhir" id="tugas-akhir-menu"> <i class="fa-solid fa-book-bookmark"></i> <h3>Tugas Akhir</h3> </div>
+                <div class="dashboard-card tugas-akhir" id="tugas-akhir-menu"> <i class="fa-solid fa-book-bookmark"></i> <h3>Proposal Novel</h3> </div>
+                <div class="dashboard-card profil" id="profil-menu"> <i class="fa-solid fa-user"></i> <h3>Profil Saya</h3> </div>
+                
+                <!-- Link Eksternal -->
+                <a href="https://bhe-24.github.io/PortalKuis/" target="_blank" class="dashboard-card kuis"> <i class="fa-solid fa-list-check"></i> <h3>Portal Kuis</h3> </a>
+                <a href="https://bhe-24.github.io/PortalUjian/" target="_blank" class="dashboard-card ujian"> <i class="fa-solid fa-stopwatch"></i> <h3>Portal Ujian</h3> </a>
             </div>
         </div>
 
@@ -225,25 +229,25 @@
         <!-- =================================== -->
         <div id="tugas-view" class="view hidden">
             <button class="btn btn-secondary back-to-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
-            <h2>Daftar Tugas</h2>
+            <h2>Daftar Tugas Harian</h2>
             <div id="assignment-list-siswa"></div>
         </div>
         <div id="task-detail-view" class="view hidden"></div>
-        <div id="kuis-view" class="view hidden">
-            <button class="btn btn-secondary back-to-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
-            <h2>Daftar Kuis</h2>
-            <div id="kuis-list-siswa"></div>
-        </div>
-        <div id="kuis-session-view" class="view hidden"></div>
-        <div id="ujian-view" class="view hidden">
-            <button class="btn btn-secondary back-to-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
-            <h2>Pilihan Ujian</h2>
-            <div id="ujian-list-siswa"></div>
-        </div>
+        
+        <!-- Halaman Proposal Novel (Tugas Akhir) -->
         <div id="tugas-akhir-view" class="view hidden">
             <button class="btn btn-secondary back-to-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
-            <h2>Pengajuan Judul Tugas Akhir</h2>
+            <h2>Pengajuan Proposal Novel</h2>
             <div id="ta-content"></div>
+        </div>
+        
+        <!-- Halaman Profil Siswa BARU -->
+        <div id="profil-view" class="view hidden">
+            <button class="btn btn-secondary back-to-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+            <h2>Profil Saya</h2>
+            <div id="profil-content" class="profile-info item-card">
+                <!-- Konten profil dimuat oleh JavaScript -->
+            </div>
         </div>
         
         <!-- =================================== -->
@@ -252,11 +256,15 @@
         <div id="admin-dashboard-view" class="view hidden">
             <h2 id="welcome-admin" style="text-align:left; margin:0 0 20px 0;"></h2>
             <div class="dashboard-grid">
-                <div class="dashboard-card tugas" id="admin-tugas-menu"> <i class="fa-solid fa-cogs"></i> <h3>Kelola Tugas</h3> </div>
-                <div class="dashboard-card kuis" id="admin-kuis-menu"> <i class="fa-solid fa-list-check"></i> <h3>Kelola Kuis</h3> </div>
-                <div class="dashboard-card ujian" id="admin-ujian-menu"> <i class="fa-solid fa-file-signature"></i> <h3>Kelola Ujian</h3> </div>
-                <div class="dashboard-card tugas-akhir" id="admin-ta-menu"> <i class="fa-solid fa-book-bookmark"></i> <h3>Review T.A</h3> </div>
+                <div class="dashboard-card tugas" id="admin-tugas-menu"> <i class="fa-solid fa-cogs"></i> <h3>Kelola Tugas Harian</h3> </div>
+                <div class="dashboard-card tugas-akhir" id="admin-ta-menu"> <i class="fa-solid fa-book-bookmark"></i> <h3>Review Proposal Novel</h3> </div>
                 <div class="dashboard-card review" id="admin-penilaian-menu"> <i class="fa-solid fa-marker"></i> <h3>Beri Nilai Tugas</h3> </div>
+                <!-- Tombol Kelola Profil BARU -->
+                <div class="dashboard-card kelola-profil" id="admin-profil-menu"> <i class="fa-solid fa-users-cog"></i> <h3>Kelola Profil Siswa</h3> </div>
+                
+                <!-- Link Eksternal Admin -->
+                <a href="https://bhe-24.github.io/PortalKuis/" target="_blank" class="dashboard-card kuis"> <i class="fa-solid fa-list-check"></i> <h3>Kelola Kuis</h3> </a>
+                <a href="https://bhe-24.github.io/PortalUjian/" target="_blank" class="dashboard-card ujian"> <i class="fa-solid fa-file-signature"></i> <h3>Kelola Ujian</h3> </a>
             </div>
              <div style="text-align: center; margin-top: 30px;">
                 <button id="admin-logout-btn" class="btn btn-danger" style="width:auto;">Logout</button>
@@ -266,7 +274,7 @@
         <div id="admin-tugas-view" class="view hidden">
             <button class="btn btn-secondary back-to-admin-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
             <h2>Kelola Tugas Harian</h2>
-            <div id="assignment-list-admin"></div> <hr style="margin: 30px 0;">
+            <div id="admin-tugas-harian-list-admin"></div> <hr style="margin: 30px 0;">
             <h3><i class="fa-solid fa-plus-circle"></i> Buat/Edit Tugas</h3>
             <form id="create-assignment-form">
                 <input type="hidden" id="edit-task-id">
@@ -279,52 +287,31 @@
                 <button type="button" id="cancel-edit-task-btn" class="btn btn-secondary hidden" style="margin-top:10px;">Batal Edit</button>
             </form>
         </div>
-
-        <div id="admin-kuis-ujian-view" class="view hidden">
-            <button class="btn btn-secondary back-to-admin-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
-            <h2 id="kuis-ujian-form-title"></h2>
-            <div id="kuis-ujian-list-admin"></div> <hr style="margin: 30px 0;">
-            <h3><i class="fa-solid fa-plus-circle"></i> Buat/Edit</h3>
-            <form id="kuis-ujian-form">
-                <input type="hidden" id="edit-ku-id">
-                <input type="hidden" id="ku-type">
-                <div class="form-group"><label for="ku-title">Judul</label><input type="text" id="ku-title" required></div>
-                <div class="form-group"><label for="ku-subject">Mata Pelajaran</label><input type="text" id="ku-subject" required></div>
-                <div class="form-group"><label for="ku-duration">Durasi (menit)</label><input type="number" id="ku-duration" required></div>
-                <div id="question-builder">
-                    <h4>Buat Soal Pilihan Ganda</h4>
-                    <div class="form-group"><label>Teks Pertanyaan</label><textarea id="qb-question" rows="3"></textarea></div>
-                    <label>Pilihan Jawaban (Pilih satu sebagai kunci jawaban)</label>
-                    <div class="question-option"><input type="radio" name="correct-answer" value="0" checked> <input type="text" class="qb-option" placeholder="Pilihan A"></div>
-                    <div class="question-option"><input type="radio" name="correct-answer" value="1"> <input type="text" class="qb-option" placeholder="Pilihan B"></div>
-                    <div class="question-option"><input type="radio" name="correct-answer" value="2"> <input type="text" class="qb-option" placeholder="Pilihan C"></div>
-                    <div class="question-option"><input type="radio" name="correct-answer" value="3"> <input type="text" class="qb-option" placeholder="Pilihan D"></div>
-                    <button type="button" id="add-question-btn" class="btn btn-secondary" style="width:auto;">+ Tambah Soal</button>
-                </div>
-                <div id="added-questions-list" style="margin-top: 20px;">
-                    <h4>Daftar Soal</h4>
-                    <p>Belum ada soal yang ditambahkan.</p>
-                </div>
-                <hr style="margin: 20px 0;">
-                <button type="submit" class="btn btn-success">Simpan</button>
-                 <button type="button" id="cancel-edit-ku-btn" class="btn btn-secondary hidden" style="margin-top:10px;">Batal Edit</button>
-            </form>
-        </div>
         
         <div id="admin-ta-review-view" class="view hidden">
              <button class="btn btn-secondary back-to-admin-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
-             <h2>Review Pengajuan Tugas Akhir</h2>
+             <h2>Review Pengajuan Proposal Novel</h2>
              <div id="ta-review-list"></div>
         </div>
 
         <div id="admin-penilaian-view" class="view hidden">
              <button class="btn btn-secondary back-to-admin-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
-             <h2>Beri Nilai Tugas</h2>
+             <h2>Beri Nilai Tugas Harian</h2>
              <div class="form-group">
                 <label for="grading-assignment-selector">Pilih Tugas untuk Dinilai:</label>
                 <select id="grading-assignment-selector"></select>
             </div>
             <div id="student-grading-list"></div>
+        </div>
+        
+        <!-- Halaman Kelola Profil Siswa BARU -->
+        <div id="admin-profil-view" class="view hidden">
+            <button class="btn btn-secondary back-to-admin-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+            <h2>Kelola Profil Siswa</h2>
+            <input type="text" id="search-user-input" placeholder="Saring nama atau email siswa...">
+            <div id="user-profile-list" style="max-height: 400px; overflow-y: auto;">
+                <!-- Daftar siswa dimuat di sini -->
+            </div>
         </div>
         
     </div>
@@ -341,8 +328,6 @@
             </div>
         </div>
     </div>
-    
-    <button id="help-bubble" class="help-bubble hidden"><i class="fa-solid fa-question"></i></button>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -355,22 +340,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- VARIABEL GLOBAL ---
     let currentUserData = null;
-    let tempQuestions = [];
     let studentSubmissions = {};
-    let currentQuizSession = null;
-    let quizTimer = null;
-    let currentViewId = 'auth-view';
+    let allStudentsCache = []; // Cache untuk daftar siswa di admin profil
     
     // --- ELEMEN DOM ---
     const loadingOverlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
-    const helpBubble = document.getElementById('help-bubble');
 
     // --- FUNGSI UTILITAS ---
     const showLoading = (message) => { loadingText.textContent = message; loadingOverlay.classList.remove('hidden'); };
     const hideLoading = () => loadingOverlay.classList.add('hidden');
     const updateView = (targetId) => { 
-        currentViewId = targetId;
         document.querySelectorAll('.view').forEach(v => v.classList.add('hidden')); 
         const targetView = document.getElementById(targetId);
         if (targetView) targetView.classList.remove('hidden');
@@ -406,17 +386,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (doc.exists) {
                     let userData = doc.data();
-                    // --- PERBAIKAN: Cek dan perbaiki peran saat login ---
                     const isSupposedToBeAdmin = user.email.toLowerCase().endsWith('@ac.id');
                     if (isSupposedToBeAdmin && userData.role !== 'pengajar') {
-                        console.log(`Role mismatch for ${user.email}. Updating role to 'pengajar'.`);
                         await docRef.update({ role: 'pengajar' });
-                        userData.role = 'pengajar'; // Perbarui data lokal secara langsung
+                        userData.role = 'pengajar'; 
                     }
-                    // --- Akhir Perbaikan ---
+                    
+                    // Inisialisasi data profil jika belum ada
+                    if (userData.role === 'siswa' && (userData.semester === undefined || userData.ips === undefined)) {
+                        await docRef.set({
+                            semester: userData.semester || 1,
+                            ips: userData.ips || 0
+                        }, { merge: true });
+                        userData.semester = userData.semester || 1;
+                        userData.ips = userData.ips || 0;
+                    }
 
                     currentUserData = { uid: user.uid, ...userData };
-                    helpBubble.classList.remove('hidden');
                     renderDashboardView();
                 } else {
                     await auth.signOut();
@@ -429,7 +415,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else {
             currentUserData = null;
-            helpBubble.classList.add('hidden');
             updateView('auth-view');
             hideLoading();
         }
@@ -463,17 +448,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- EVENT LISTENER MENU SISWA ---
     document.getElementById('tugas-menu').onclick = () => renderTugasView();
-    document.getElementById('kuis-menu').onclick = () => renderKuisUjianSiswaView('Kuis');
-    document.getElementById('ujian-menu').onclick = () => renderKuisUjianSiswaView('Ujian');
     document.getElementById('tugas-akhir-menu').onclick = () => renderTugasAkhirView();
+    document.getElementById('profil-menu').onclick = () => renderProfilView(); // BARU
+    // Tombol Kuis & Ujian adalah link <a>, tidak perlu listener JS
 
     // --- EVENT LISTENER MENU ADMIN ---
     document.getElementById('admin-tugas-menu').onclick = () => renderAdminTugasView();
-    document.getElementById('admin-kuis-menu').onclick = () => renderAdminKuisUjianView('Kuis');
-    document.getElementById('admin-ujian-menu').onclick = () => renderAdminKuisUjianView('Ujian');
     document.getElementById('admin-ta-menu').onclick = () => renderAdminTaReviewView();
     document.getElementById('admin-penilaian-menu').onclick = () => renderAdminPenilaianView();
-
+    document.getElementById('admin-profil-menu').onclick = () => renderAdminProfilView(); // BARU
+    // Tombol Kuis & Ujian Admin adalah link <a>
 
     // --- FUNGSI HALAMAN SISWA ---
     async function renderTugasView() {
@@ -514,12 +498,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (isSubmitted) {
             let gradeInfoHTML = '';
-            // Cek jika nilai sudah diberikan oleh guru
             if (isSubmitted.nilai !== null && isSubmitted.nilai !== undefined && isSubmitted.nilai !== '') {
-                 gradeInfoHTML = `
-                    <p>Tugas Anda telah dinilai oleh pengajar.</p>
-                    <button id="check-grade-btn" class="btn" style="width: auto; margin-top: 15px;">Cek Nilai</button>
-                `;
+                 gradeInfoHTML = `<p>Tugas Anda telah dinilai oleh pengajar.</p><button id="check-grade-btn" class="btn" style="width: auto; margin-top: 15px;">Cek Nilai</button>`;
             } else {
                 gradeInfoHTML = `<p>Tugas Anda sedang menunggu penilaian dari pengajar.</p>`;
             }
@@ -544,14 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
             checkGradeBtn.onclick = () => {
                 const grade = isSubmitted.nilai;
                 const feedback = isSubmitted.feedback || 'Tidak ada feedback.';
-                showModal('Hasil Penilaian', 
-                    `<div style="text-align: left;">
-                        <h4>Nilai Anda:</h4>
-                        <div class="timer-display">${grade}</div>
-                        <h4 style="margin-top: 15px;">Feedback dari Pengajar:</h4>
-                        <p><em>${feedback}</em></p>
-                    </div>`
-                );
+                showModal('Hasil Penilaian', `<div style="text-align: left;"><h4>Nilai Anda:</h4><div class="timer-display">${grade}</div><h4 style="margin-top: 15px;">Feedback dari Pengajar:</h4><p><em>${feedback}</em></p></div>`);
             };
         }
 
@@ -566,13 +539,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             assignmentId: assignment.id, studentUid: currentUserData.uid, studentName: currentUserData.name,
                             submittedAt: firebase.firestore.FieldValue.serverTimestamp(), nilai: null, feedback: ''
                         };
-
                         if (assignment.tipe === 'Dokumen') {
-                            const fileInput = document.getElementById('jawaban-file');
-                            const file = fileInput.files[0];
+                            const file = document.getElementById('jawaban-file').files[0];
                             if (!file) throw new Error('File belum dipilih.');
                             if (file.size > 2 * 1024 * 1024) throw new Error('Ukuran file melebihi 2MB.');
-                            
                             const storageRef = storage.ref(`submissions/${assignment.id}/${currentUserData.uid}/${file.name}`);
                             const uploadTask = await storageRef.put(file);
                             payload.fileUrl = await uploadTask.ref.getDownloadURL();
@@ -580,7 +550,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else {
                             payload.jawabanTeks = document.getElementById('jawaban-teks').value;
                         }
-
                         const newSubmission = await db.collection('submissions').add(payload);
                         studentSubmissions[assignment.id] = { id: newSubmission.id, ...payload };
                         showTaskDetail(assignment);
@@ -591,173 +560,120 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-    async function renderKuisUjianSiswaView(type) {
-        const viewId = type === 'Kuis' ? 'kuis-view' : 'ujian-view';
-        const listId = type === 'Kuis' ? 'kuis-list-siswa' : 'ujian-list-siswa';
-        updateView(viewId);
-        const listDiv = document.getElementById(listId);
-        showLoading(`Memuat daftar ${type}...`);
-        
-        try {
-            const [kuisSnapshot, submissionsSnapshot] = await Promise.all([
-                db.collection('quizzes').where('type', '==', type).get(),
-                db.collection('quiz_submissions').where('studentUid', '==', currentUserData.uid).where('type', '==', type).get()
-            ]);
-
-            const quizSubmissions = {};
-            submissionsSnapshot.forEach(doc => { quizSubmissions[doc.data().quizId] = doc.data(); });
-
-            listDiv.innerHTML = '';
-            const items = kuisSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
-            items.sort((a,b) => (b.createdAt?.toDate() || 0) - (a.createdAt?.toDate() || 0));
-
-            if(items.length === 0) {
-                listDiv.innerHTML = `<p style="text-align:center;">Belum ada ${type} yang dikerjakan saat ini.</p>`;
-            } else {
-                items.forEach(item => {
-                    const card = document.createElement('div');
-                    const submission = quizSubmissions[item.id];
-                    card.className = 'item-card clickable';
-
-                    if (submission) {
-                        card.innerHTML = `<i class="fa-solid fa-check-circle submitted-icon"></i><h3>${item.title}</h3><p>${item.subject}</p><p><strong>Skor Anda: ${submission.score}</strong></p>`;
-                        card.onclick = () => showModal(`Hasil ${item.type}`, `<div class="submission-success-view" style="padding: 20px 0; border: none;"><h3>Skor Anda untuk ${item.title} adalah:</h3><div class="timer-display">${submission.score}</div></div>`);
-                    } else {
-                        card.innerHTML = `<h3>${item.title}</h3><p>${item.subject}</p><p>Jumlah Soal: ${item.questions.length}</p>`;
-                        card.onclick = () => startKuis(item);
-                    }
-                    listDiv.appendChild(card);
-                });
-            }
-        } catch(err) {
-            console.error(`Gagal memuat ${type}:`, err);
-            listDiv.innerHTML = `<p style="text-align:center;">Gagal memuat data.</p>`;
-        } finally { hideLoading(); }
-    }
-    
-    function startKuis(kuisData) {
-        currentQuizSession = { data: kuisData, currentQuestionIndex: 0, answers: new Array(kuisData.questions.length).fill(null), startTime: Date.now() };
-        updateView('kuis-session-view');
-        renderCurrentQuizQuestion();
-        startTimer(kuisData.duration);
-    }
-    
-    function renderCurrentQuizQuestion() {
-        const sessionView = document.getElementById('kuis-session-view');
-        const q = currentQuizSession.data.questions[currentQuizSession.currentQuestionIndex];
-        const optionsHTML = q.options.map((option, index) => `<div class="form-group"><input type="radio" id="option-${index}" name="kuis-option" value="${index}"><label for="option-${index}">${option}</label></div>`).join('');
-
-        sessionView.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center;"><h2 style="text-align: left;">${currentQuizSession.data.title}</h2><div id="kuis-timer" class="timer-display"></div></div>
-            <p>Soal ${currentQuizSession.currentQuestionIndex + 1} dari ${currentQuizSession.data.questions.length}</p>
-            <div class="item-card kuis-question-container"><h3>${q.questionText}</h3>${optionsHTML}</div>
-            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                <button id="prev-question-btn" class="btn btn-secondary" style="width: auto;">Sebelumnya</button>
-                <button id="next-question-btn" class="btn" style="width: auto;">Selanjutnya</button>
-                <button id="submit-kuis-btn" class="btn btn-success hidden" style="width: auto;">Selesaikan</button>
-            </div>`;
-        
-        const savedAnswer = currentQuizSession.answers[currentQuizSession.currentQuestionIndex];
-        if (savedAnswer !== null) sessionView.querySelector(`input[name="kuis-option"][value="${savedAnswer}"]`).checked = true;
-
-        sessionView.querySelectorAll('input[name="kuis-option"]').forEach(radio => { radio.onchange = () => { currentQuizSession.answers[currentQuizSession.currentQuestionIndex] = parseInt(radio.value); }; });
-
-        const prevBtn = document.getElementById('prev-question-btn'), nextBtn = document.getElementById('next-question-btn'), submitBtn = document.getElementById('submit-kuis-btn');
-        prevBtn.disabled = currentQuizSession.currentQuestionIndex === 0;
-        nextBtn.classList.toggle('hidden', currentQuizSession.currentQuestionIndex === currentQuizSession.data.questions.length - 1);
-        submitBtn.classList.toggle('hidden', currentQuizSession.currentQuestionIndex !== currentQuizSession.data.questions.length - 1);
-
-        prevBtn.onclick = () => { currentQuizSession.currentQuestionIndex--; renderCurrentQuizQuestion(); };
-        nextBtn.onclick = () => { currentQuizSession.currentQuestionIndex++; renderCurrentQuizQuestion(); };
-        submitBtn.onclick = finishKuis;
-    }
-    
-    function startTimer(durationMinutes) {
-        clearInterval(quizTimer);
-        let timeRemaining = durationMinutes * 60;
-        const timerEl = document.getElementById('kuis-timer');
-        const updateTimerDisplay = () => {
-            if(!timerEl) return;
-            const minutes = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
-            const seconds = (timeRemaining % 60).toString().padStart(2, '0');
-            timerEl.textContent = `${minutes}:${seconds}`;
-        };
-        updateTimerDisplay();
-        quizTimer = setInterval(() => {
-            timeRemaining--;
-            updateTimerDisplay();
-            if (timeRemaining <= 0) {
-                clearInterval(quizTimer);
-                showModal('Waktu Habis!', 'Jawaban Anda akan dikumpulkan secara otomatis.').then(finishKuis);
-            }
-        }, 1000);
-    }
-
-    async function finishKuis() {
-        clearInterval(quizTimer);
-        showLoading('Menghitung skor...');
-        let score = 0;
-        currentQuizSession.data.questions.forEach((q, index) => { if (currentQuizSession.answers[index] === Number(q.correctAnswerIndex)) score++; });
-        const finalScore = Math.round((score / currentQuizSession.data.questions.length) * 100);
-
-        const payload = {
-            studentUid: currentUserData.uid, studentName: currentUserData.name, quizId: currentQuizSession.data.id, quizTitle: currentQuizSession.data.title,
-            type: currentQuizSession.data.type, answers: currentQuizSession.answers, score: finalScore, submittedAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-        try {
-            await db.collection('quiz_submissions').add(payload);
-            const sessionView = document.getElementById('kuis-session-view');
-            sessionView.innerHTML = `<div class="submission-success-view"><i class="fa-solid fa-award"></i><h3>${currentQuizSession.data.type} Selesai!</h3><p>Skor Anda:</p><div class="timer-display">${finalScore}</div><button class="btn back-to-dashboard-after-quiz" style="width: auto;">Kembali ke Dasbor</button></div>`;
-            sessionView.querySelector('.back-to-dashboard-after-quiz').onclick = renderDashboardView;
-        } catch(err) { showModal('Error', 'Gagal menyimpan hasil Anda.'); }
-        finally { hideLoading(); }
-    }
-
+    // --- FUNGSI HALAMAN PROPOSAL NOVEL (TUGAS AKHIR) ---
     async function renderTugasAkhirView() {
         updateView('tugas-akhir-view');
         const contentDiv = document.getElementById('ta-content');
-        showLoading('Memuat data Tugas Akhir...');
+        showLoading('Memuat data Proposal Novel...');
         try {
             const snapshot = await db.collection('final_projects').where('studentUid', '==', currentUserData.uid).limit(1).get();
             if (snapshot.empty) {
-                contentDiv.innerHTML = `<form id="propose-ta-form"><div class="form-group"><label for="ta-title">Judul Proposal</label><input type="text" id="ta-title" required></div><div class="form-group"><label for="ta-desc">Deskripsi Singkat</label><textarea id="ta-desc" rows="5" required></textarea></div><button type="submit" class="btn">Ajukan Proposal</button></form>`;
+                // Form Pengajuan
+                contentDiv.innerHTML = `
+                    <p style="text-align: center; margin-bottom: 20px;">Anda belum mengajukan proposal novel. Silakan isi form di bawah ini.</p>
+                    <form id="propose-ta-form">
+                        <div class="form-group"><label for="ta-title">Judul Novel</label><input type="text" id="ta-title" required></div>
+                        <div class="form-group"><label for="ta-sinopsis">Sinopsis</label><textarea id="ta-sinopsis" rows="6" required></textarea></div>
+                        <div class="form-group"><label for="ta-naskah">Unggah Naskah (Opsional, PDF/DOCX, Maks 10MB)</label><input type="file" id="ta-naskah" accept=".pdf,.doc,.docx"></div>
+                        <button type="submit" class="btn">Ajukan Proposal</button>
+                    </form>`;
+                
                 document.getElementById('propose-ta-form').onsubmit = async (e) => {
                     e.preventDefault();
                     if(await showModal('Konfirmasi', 'Yakin ingin mengajukan proposal ini?', true)) {
-                        showLoading('Mengajukan...');
-                        const payload = { title: document.getElementById('ta-title').value, description: document.getElementById('ta-desc').value, studentUid: currentUserData.uid, studentName: currentUserData.name, status: 'pending', notes: '', submittedAt: firebase.firestore.FieldValue.serverTimestamp() };
-                        try { await db.collection('final_projects').add(payload); renderTugasAkhirView(); } 
-                        catch(err) { showModal('Error', 'Gagal mengajukan proposal.'); } finally { hideLoading(); }
+                        showLoading('Mengajukan proposal...');
+                        const file = document.getElementById('ta-naskah').files[0];
+                        let fileUrl = null; let fileName = null;
+                        
+                        try {
+                            const payload = { 
+                                title: document.getElementById('ta-title').value, 
+                                sinopsis: document.getElementById('ta-sinopsis').value, 
+                                studentUid: currentUserData.uid, 
+                                studentName: currentUserData.name, 
+                                status: 'Menunggu Review', 
+                                feedback: '', 
+                                submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                fileUrl: null,
+                                fileName: null
+                            };
+
+                            if (file) {
+                                if (file.size > 10 * 1024 * 1024) throw new Error('Ukuran file melebihi 10MB.');
+                                const storageRef = storage.ref(`proposals/${currentUserData.uid}/${file.name}`);
+                                const uploadTask = await storageRef.put(file);
+                                payload.fileUrl = await uploadTask.ref.getDownloadURL();
+                                payload.fileName = file.name;
+                            }
+                            
+                            await db.collection('final_projects').add(payload); 
+                            renderTugasAkhirView(); 
+                        } 
+                        catch(err) { showModal('Error', 'Gagal mengajukan proposal. ' + err.message); } 
+                        finally { hideLoading(); }
                     }
                 }
             } else {
-                const proposal = snapshot.docs[0].data();
-                let statusTag, timelineHTML = '';
+                // Tampilan Status Pengajuan
+                const proposal = {id: snapshot.docs[0].id, ...snapshot.docs[0].data()};
+                let statusTag, statusClass;
                 switch(proposal.status) {
-                    case 'disetujui': statusTag = '<span class="tag tag-green">Disetujui</span>'; break;
-                    case 'revisi': statusTag = '<span class="tag tag-orange">Perlu Revisi</span>'; break;
-                    default: statusTag = '<span class="tag tag-gray">Menunggu Review</span>';
+                    case 'Disetujui': statusClass = 'tag-green'; break;
+                    case 'Revisi': statusClass = 'tag-orange'; break;
+                    default: statusClass = 'tag-gray'; // Menunggu Review
                 }
-                if(proposal.status === 'disetujui' && proposal.timeline && proposal.timeline.length > 0) {
-                    timelineHTML = '<h4>Timeline Pengerjaan</h4><ul style="list-style-type: none; padding-left: 0;">';
-                    proposal.timeline.forEach(step => { timelineHTML += `<li style="background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 8px;"><strong>${step.stage}</strong> - Target: ${new Date(step.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</li>`; });
-                    timelineHTML += '</ul>';
-                }
-                contentDiv.innerHTML = `<div class="item-card"><div class="card-header"><h3>${proposal.title}</h3>${statusTag}</div><p>${proposal.description}</p>${proposal.notes ? `<hr><p><strong>Catatan dari Dosen:</strong><br><em>${proposal.notes}</em></p>`: ''}${timelineHTML}</div>`;
+                statusTag = `<span class="tag ${statusClass}">${proposal.status}</span>`;
+                
+                let fileHTML = proposal.fileUrl ? `<p><strong>Naskah Terlampir:</strong> <a href="${proposal.fileUrl}" target="_blank" class="btn btn-secondary btn-sm download-link"><i class="fa fa-download"></i> Unduh Naskah</a></p>` : '<p>Tidak ada naskah terlampir.</p>';
+
+                contentDiv.innerHTML = `
+                    <div class="item-card">
+                        <div class="card-header"><h3>${proposal.title}</h3>${statusTag}</div>
+                        <h4>Sinopsis:</h4>
+                        <p>${proposal.sinopsis}</p>
+                        ${fileHTML}
+                        ${proposal.feedback ? `<hr><p><strong>Catatan dari Reviewer:</strong><br><em style="color:var(--dark-text);">${proposal.feedback}</em></p>`: ''}
+                    </div>`;
             }
-        } catch (err) { contentDiv.innerHTML = '<p>Gagal memuat data.</p>'; console.error(err); } 
+        } catch (err) { contentDiv.innerHTML = '<p>Gagal memuat data proposal.</p>'; console.error(err); } 
         finally { hideLoading(); }
+    }
+    
+    // --- FUNGSI HALAMAN PROFIL SISWA (BARU) ---
+    function renderProfilView() {
+        updateView('profil-view');
+        const contentDiv = document.getElementById('profil-content');
+        
+        // Buat inisial dari nama
+        const initial = currentUserData.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        
+        contentDiv.innerHTML = `
+            <div class="profile-pic">${initial}</div>
+            <h3>${currentUserData.name}</h3>
+            <p>${currentUserData.email}</p>
+            <div class="profile-details">
+                <div class="detail-item">
+                    <strong>Semester Saat Ini</strong>
+                    <span>${currentUserData.semester || '1'}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Indeks Penilaian Semester (IPS)</strong>
+                    <span>${currentUserData.ips || '0.00'}</span>
+                </div>
+            </div>
+        `;
     }
 
 
     // --- FUNGSI HALAMAN ADMIN ---
+    
+    // Admin: Kelola Tugas Harian
     async function renderAdminTugasView() {
         updateView('admin-tugas-view');
         document.getElementById('create-assignment-form').reset();
         document.getElementById('edit-task-id').value = '';
         document.getElementById('cancel-edit-task-btn').classList.add('hidden');
-        const listDiv = document.getElementById('assignment-list-admin');
+        const listDiv = document.getElementById('admin-tugas-harian-list-admin');
         showLoading('Memuat daftar tugas...');
         try {
             const snapshot = await db.collection('assignments').orderBy('createdAt', 'desc').get();
@@ -775,7 +691,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch(err) { listDiv.innerHTML = '<p>Gagal memuat tugas.</p>'; }
         finally { hideLoading(); }
     }
-
     document.getElementById('create-assignment-form').onsubmit = async (e) => {
         e.preventDefault(); 
         const editId = document.getElementById('edit-task-id').value;
@@ -793,8 +708,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) { showModal('Error', 'Gagal menyimpan tugas.'); }
         finally { hideLoading(); }
     };
-    
-    document.getElementById('assignment-list-admin').addEventListener('click', async e => {
+    document.getElementById('admin-tugas-harian-list-admin').addEventListener('click', async e => {
         const deleteBtn = e.target.closest('.delete-task');
         if (deleteBtn) {
             const taskId = deleteBtn.dataset.id;
@@ -825,149 +739,13 @@ document.addEventListener('DOMContentLoaded', () => {
             finally { hideLoading(); }
         }
     });
-
     document.getElementById('cancel-edit-task-btn').onclick = () => {
         document.getElementById('create-assignment-form').reset();
         document.getElementById('edit-task-id').value = '';
         document.getElementById('cancel-edit-task-btn').classList.add('hidden');
     };
 
-    function renderAdminKuisUjianView(type) {
-        tempQuestions = [];
-        updateView('admin-kuis-ujian-view');
-        const form = document.getElementById('kuis-ujian-form');
-        form.reset();
-        document.getElementById('edit-ku-id').value = '';
-        document.getElementById('cancel-edit-ku-btn').classList.add('hidden');
-        document.getElementById('kuis-ujian-form-title').textContent = `Kelola ${type}`;
-        document.getElementById('ku-type').value = type;
-        updateAddedQuestionsList();
-        loadExistingQuizzes(type);
-    }
-    
-    async function loadExistingQuizzes(type) {
-        const listDiv = document.getElementById('kuis-ujian-list-admin');
-        listDiv.innerHTML = `<h3>Daftar ${type} Tersimpan</h3>`;
-        try {
-            const snapshot = await db.collection('quizzes').where('type', '==', type).get();
-            const items = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
-            items.sort((a,b) => (b.createdAt?.toDate() || 0) - (a.createdAt?.toDate() || 0));
-
-            if (items.length === 0) { listDiv.innerHTML += `<p>Belum ada ${type} yang dibuat.</p>`; }
-            else {
-                items.forEach(item => {
-                     const card = document.createElement('div');
-                     card.className = 'item-card';
-                     card.innerHTML = `
-                        <div class="card-header">
-                            <h3>${item.title}</h3>
-                            <div class="card-actions">
-                                <button class="btn btn-secondary btn-icon btn-sm view-results" data-id="${item.id}" data-title="${item.title}" title="Lihat Hasil"><i class="fa-solid fa-chart-line"></i></button>
-                                <button class="btn btn-secondary btn-icon btn-sm edit-ku" data-id="${item.id}" data-type="${type}" title="Edit"><i class="fa fa-edit"></i></button>
-                                <button class="btn btn-danger btn-icon btn-sm delete-ku" data-id="${item.id}" data-type="${type}" title="Hapus"><i class="fa fa-trash"></i></button>
-                            </div>
-                        </div>
-                        <p>${item.subject}</p>`;
-                     listDiv.appendChild(card);
-                });
-            }
-        } catch(err) { listDiv.innerHTML += `<p>Gagal memuat data.</p>`;}
-    }
-
-    document.getElementById('kuis-ujian-list-admin').addEventListener('click', async e => {
-        const resultsBtn = e.target.closest('.view-results');
-        if (resultsBtn) {
-            const kuId = resultsBtn.dataset.id;
-            const kuTitle = resultsBtn.dataset.title;
-            showLoading('Memuat hasil...');
-            try {
-                const snapshot = await db.collection('quiz_submissions').where('quizId', '==', kuId).get();
-                if (snapshot.empty) { showModal(`Hasil: ${kuTitle}`, '<p>Belum ada siswa yang mengerjakan.</p>'); return; }
-                let tableHTML = '<table class="results-table"><thead><tr><th>Nama Siswa</th><th>Nilai</th></tr></thead><tbody>';
-                snapshot.docs.map(doc => doc.data()).sort((a, b) => b.score - a.score)
-                    .forEach(sub => { tableHTML += `<tr><td>${sub.studentName}</td><td>${sub.score}</td></tr>`; });
-                tableHTML += '</tbody></table>';
-                showModal(`Hasil: ${kuTitle}`, tableHTML);
-            } catch (err) { showModal('Error', 'Gagal memuat hasil.'); } finally { hideLoading(); }
-        }
-
-        const deleteBtn = e.target.closest('.delete-ku');
-        if (deleteBtn) {
-            const kuId = deleteBtn.dataset.id; const type = deleteBtn.dataset.type;
-            if (await showModal('Konfirmasi', `Yakin ingin menghapus ${type} ini?`, true)) {
-                showLoading('Menghapus...');
-                try { await db.collection('quizzes').doc(kuId).delete(); renderAdminKuisUjianView(type); } 
-                catch (err) { showModal('Error', `Gagal menghapus ${type}.`); } finally { hideLoading(); }
-            }
-        }
-        const editBtn = e.target.closest('.edit-ku');
-        if (editBtn) {
-            const kuId = editBtn.dataset.id;
-            showLoading('Memuat data...');
-            try {
-                const doc = await db.collection('quizzes').doc(kuId).get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('edit-ku-id').value = kuId;
-                    document.getElementById('ku-title').value = data.title;
-                    document.getElementById('ku-subject').value = data.subject;
-                    document.getElementById('ku-duration').value = data.duration;
-                    tempQuestions = data.questions;
-                    updateAddedQuestionsList();
-                    document.getElementById('cancel-edit-ku-btn').classList.remove('hidden');
-                    window.scrollTo(0, document.body.scrollHeight);
-                }
-            } catch (err) { showModal('Error', 'Gagal memuat data.'); } finally { hideLoading(); }
-        }
-    });
-
-     document.getElementById('cancel-edit-ku-btn').onclick = () => {
-        const type = document.getElementById('ku-type').value; renderAdminKuisUjianView(type);
-    };
-    
-    document.getElementById('add-question-btn').onclick = () => {
-        const questionText = document.getElementById('qb-question').value.trim();
-        const options = Array.from(document.querySelectorAll('.qb-option')).map(input => input.value.trim());
-        const correctAnswerIndex = document.querySelector('input[name="correct-answer"]:checked').value;
-        if (!questionText || options.some(opt => opt === '')) { showModal('Peringatan', 'Teks dan semua pilihan jawaban harus diisi.'); return; }
-        tempQuestions.push({ questionText, options, correctAnswerIndex: parseInt(correctAnswerIndex) });
-        updateAddedQuestionsList();
-        document.getElementById('qb-question').value = '';
-        document.querySelectorAll('.qb-option').forEach(input => input.value = '');
-        document.querySelector('input[name="correct-answer"][value="0"]').checked = true;
-    };
-
-    function updateAddedQuestionsList() {
-        const listDiv = document.getElementById('added-questions-list');
-        listDiv.innerHTML = '<h4>Daftar Soal</h4>';
-        if (tempQuestions.length === 0) { listDiv.innerHTML += '<p>Belum ada soal yang ditambahkan.</p>'; return; }
-        tempQuestions.forEach((q, index) => {
-            const questionDiv = document.createElement('div');
-            questionDiv.className = 'added-question';
-            const optionsHTML = q.options.map((opt, i) => `<li ${parseInt(q.correctAnswerIndex) === i ? 'style="font-weight:bold; color:var(--success-color);"' : ''}>${opt}</li>`).join('');
-            questionDiv.innerHTML = `<p><strong>${index + 1}. ${q.questionText}</strong></p><ul>${optionsHTML}</ul>`;
-            listDiv.appendChild(questionDiv);
-        });
-    }
-
-    document.getElementById('kuis-ujian-form').onsubmit = async (e) => {
-        e.preventDefault();
-        if (tempQuestions.length === 0) { showModal('Peringatan', 'Anda harus menambahkan setidaknya satu soal.'); return; }
-        const type = document.getElementById('ku-type').value; const editId = document.getElementById('edit-ku-id').value;
-        const payload = {
-            title: document.getElementById('ku-title').value, type: type, subject: document.getElementById('ku-subject').value,
-            duration: parseInt(document.getElementById('ku-duration').value), teacherName: currentUserData.name, questions: tempQuestions,
-        };
-        if(!editId) payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-        showLoading('Menyimpan...');
-        try {
-            if(editId) await db.collection('quizzes').doc(editId).update(payload);
-            else await db.collection('quizzes').add(payload);
-            showModal('Sukses', `${type} berhasil disimpan.`).then(() => renderAdminKuisUjianView(type));
-        } catch(err) { showModal('Error', `Gagal menyimpan ${type}.`); }
-        finally { hideLoading(); }
-    };
-    
+    // Admin: Review Proposal Novel (Tugas Akhir)
     async function renderAdminTaReviewView() { 
         updateView('admin-ta-review-view');
         const listDiv = document.getElementById('ta-review-list');
@@ -975,23 +753,30 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const snapshot = await db.collection('final_projects').orderBy('submittedAt', 'desc').get();
             listDiv.innerHTML = '';
-            if(snapshot.empty) { listDiv.innerHTML = '<p>Belum ada pengajuan tugas akhir.</p>'; return; }
+            if(snapshot.empty) { listDiv.innerHTML = '<p style="text-align:center;">Belum ada pengajuan proposal novel.</p>'; return; }
             snapshot.docs.forEach(doc => {
                 const proposal = {id: doc.id, ...doc.data()};
-                const timelineBuilderHTML = proposal.status === 'disetujui' ? `
-                    <div class="timeline-builder" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
-                        <h4>Timeline Pengerjaan</h4>
-                        <div id="timeline-list-${proposal.id}">
-                            ${(proposal.timeline || []).map(t => `<p><strong>${t.stage}</strong> - ${new Date(t.date).toLocaleDateString('id-ID')}</p>`).join('') || '<p><em>Belum ada timeline.</em></p>'}
-                        </div>
-                        <div class="form-group" style="display:flex; gap:10px; align-items:flex-end; margin-top:15px;">
-                            <input type="text" class="timeline-stage-input" placeholder="Nama Tahap Baru" style="padding:8px; flex-grow:1;">
-                            <input type="date" class="timeline-date-input" style="padding:8px;">
-                            <button type="button" class="btn btn-secondary btn-sm add-timeline-step" data-id="${proposal.id}" style="width:auto; height: 41px;">+ Tambah</button>
-                        </div>
-                    </div>` : '';
+                let fileHTML = proposal.fileUrl ? `<p><strong>Naskah:</strong> <a href="${proposal.fileUrl}" target="_blank" class="btn btn-secondary btn-sm download-link"><i class="fa fa-download"></i> Unduh</a></p>` : '';
+                
                 const card = document.createElement('div'); card.className = 'item-card'; card.style.cursor = 'default';
-                card.innerHTML = `<h3>${proposal.title}</h3><p><strong>Oleh:</strong> ${proposal.studentName}</p><p>${proposal.description}</p><div class="form-group"><label>Status:</label><select class="status-selector" data-id="${proposal.id}"><option value="pending" ${proposal.status === 'pending' ? 'selected' : ''}>Menunggu Review</option><option value="disetujui" ${proposal.status === 'disetujui' ? 'selected' : ''}>Disetujui</option><option value="revisi" ${proposal.status === 'revisi' ? 'selected' : ''}>Perlu Revisi</option></select></div><div class="form-group"><label>Catatan/Feedback:</label><textarea class="notes-input" rows="3" data-id="${proposal.id}">${proposal.notes || ''}</textarea></div><button class="btn btn-success btn-sm save-ta-review" data-id="${proposal.id}" style="width:auto;">Simpan Status</button>${timelineBuilderHTML}`;
+                card.innerHTML = `
+                    <h3>${proposal.title}</h3>
+                    <p><strong>Oleh:</strong> ${proposal.studentName}</p>
+                    <p><strong>Sinopsis:</strong> ${proposal.sinopsis}</p>
+                    ${fileHTML}
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Status:</label>
+                        <select class="status-selector" data-id="${proposal.id}">
+                            <option value="Menunggu Review" ${proposal.status === 'Menunggu Review' ? 'selected' : ''}>Menunggu Review</option>
+                            <option value="Disetujui" ${proposal.status === 'Disetujui' ? 'selected' : ''}>Disetujui</option>
+                            <option value="Revisi" ${proposal.status === 'Revisi' ? 'selected' : ''}>Perlu Revisi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Catatan/Feedback:</label>
+                        <textarea class="notes-input" rows="3" data-id="${proposal.id}">${proposal.feedback || ''}</textarea>
+                    </div>
+                    <button class="btn btn-success btn-sm save-ta-review" data-id="${proposal.id}" style="width:auto;">Simpan Status</button>`;
                 listDiv.appendChild(card);
             });
         } catch (err) { listDiv.innerHTML = '<p>Gagal memuat data.</p>'; }
@@ -1001,26 +786,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if(e.target.classList.contains('save-ta-review')) {
             const proposalId = e.target.dataset.id;
             const status = document.querySelector(`.status-selector[data-id="${proposalId}"]`).value;
-            const notes = document.querySelector(`.notes-input[data-id="${proposalId}"]`).value;
+            const feedback = document.querySelector(`.notes-input[data-id="${proposalId}"]`).value;
             showLoading('Menyimpan review...');
-            try { await db.collection('final_projects').doc(proposalId).update({ status, notes }); hideLoading(); showModal('Sukses', 'Status pengajuan berhasil diperbarui.').then(renderAdminTaReviewView); } 
+            try { 
+                await db.collection('final_projects').doc(proposalId).update({ status, feedback }); 
+                hideLoading(); 
+                showModal('Sukses', 'Status proposal berhasil diperbarui.');
+            } 
             catch (err) { hideLoading(); showModal('Error', 'Gagal menyimpan review.'); }
-        }
-        if (e.target.classList.contains('add-timeline-step')) {
-            const proposalId = e.target.dataset.id;
-            const card = e.target.closest('.item-card');
-            const stage = card.querySelector('.timeline-stage-input').value;
-            const date = card.querySelector('.timeline-date-input').value;
-            if (!stage || !date) { showModal('Peringatan', 'Nama tahap dan tanggal harus diisi.'); return; }
-            showLoading('Menambah tahap...');
-            try {
-                await db.collection('final_projects').doc(proposalId).update({ timeline: firebase.firestore.FieldValue.arrayUnion({ stage, date }) });
-                renderAdminTaReviewView();
-            } catch (err) { showModal('Error', 'Gagal menambah tahap timeline.'); } finally { hideLoading(); }
         }
     });
     
-    // --- FUNGSI HALAMAN PENILAIAN ADMIN ---
+    // Admin: Penilaian Tugas Harian
     async function renderAdminPenilaianView() {
         updateView('admin-penilaian-view');
         const assignmentSelector = document.getElementById('grading-assignment-selector');
@@ -1035,7 +812,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch(e) { studentGradingList.innerHTML = '<p>Gagal memuat daftar tugas.</p>'; } 
         finally { hideLoading(); }
     }
-    
     document.getElementById('grading-assignment-selector').onchange = async (e) => {
         const assignmentId = e.target.value;
         const studentGradingList = document.getElementById('student-grading-list');
@@ -1043,7 +819,6 @@ document.addEventListener('DOMContentLoaded', () => {
             studentGradingList.innerHTML = '<p>Silakan pilih tugas untuk memulai penilaian.</p>';
             return;
         }
-
         showLoading('Memuat data jawaban siswa...');
         try {
             const submissionsSnap = await db.collection('submissions').where('assignmentId', '==', assignmentId).get();
@@ -1054,25 +829,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 studentGradingList.innerHTML = '<p>Belum ada siswa yang mengumpulkan tugas ini.</p>';
                 return;
             }
-
             submissions.sort((a, b) => (a.studentName || '').localeCompare(b.studentName || '')).forEach(submission => {
                 const card = document.createElement('div');
                 card.className = 'grading-card';
-                
                 const isGraded = submission.nilai !== null && submission.nilai !== undefined && submission.nilai !== '';
                 const isDisabled = isGraded ? 'disabled' : '';
                 const buttonText = isGraded ? 'Tersimpan' : 'Simpan Nilai';
                 const buttonClass = isGraded ? 'btn-secondary' : 'btn-success';
-                
                 const statusTag = `<span class="tag ${isGraded ? 'tag-blue' : 'tag-green'}">${isGraded ? 'Sudah Dinilai' : 'Sudah Mengumpulkan'}</span>`;
-                
                 let jawabanHTML = '';
                 if (submission.fileUrl) {
-                    jawabanHTML = `<p><strong>File:</strong> <a href="${submission.fileUrl}" target="_blank" class="btn btn-secondary download-link"><i class="fa fa-download"></i> Unduh</a></p>`;
+                    jawabanHTML = `<p><strong>File:</strong> <a href="${submission.fileUrl}" target="_blank" class="btn btn-secondary download-link"><i class="fa fa-download"></i> Unduh (${submission.fileName || 'file'})</a></p>`;
                 } else {
                     jawabanHTML = `<p><strong>Jawaban:</strong> ${submission.jawabanTeks || '<i>N/A</i>'}</p>`;
                 }
-
                 card.innerHTML = `
                     <div class="card-header"><h3>${submission.studentName}</h3>${statusTag}</div>
                     ${jawabanHTML}
@@ -1089,14 +859,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     </form>`;
                 studentGradingList.appendChild(card);
             });
-        } catch(e) {
-            console.error('Gagal memuat data penilaian:', e);
-            studentGradingList.innerHTML = '<p>Gagal memuat data penilaian.</p>';
-        } finally {
-            hideLoading();
-        }
+        } catch(e) { console.error('Gagal memuat data penilaian:', e); studentGradingList.innerHTML = '<p>Gagal memuat data penilaian.</p>'; } 
+        finally { hideLoading(); }
     };
-    
     document.getElementById('student-grading-list').addEventListener('submit', async (e) => {
         if(e.target.classList.contains('grading-form')) {
             e.preventDefault();
@@ -1116,30 +881,175 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- FUNGSI BOLA BANTUAN ---
-    const helpMessages = {
-        'auth-view': 'Silakan masuk menggunakan email dan password Anda. Jika belum memiliki akun, klik tautan daftar di bawah form.',
-        'dashboard-view': 'Selamat datang di dasbor Anda! Pilih salah satu menu untuk melihat tugas, memulai kuis, atau mengecek progres tugas akhir.',
-        'tugas-view': 'Di sini Anda bisa melihat semua tugas yang harus dikerjakan. Klik pada kartu tugas untuk melihat instruksi lengkap dan mengirimkan jawaban.',
-        'task-detail-view': 'Baca instruksi dengan saksama. Kirim jawaban Anda melalui form yang tersedia sebelum batas waktu berakhir. Jawaban hanya bisa dikirim satu kali.',
-        'kuis-view': 'Ini adalah daftar kuis yang tersedia. Klik pada salah satu kuis untuk memulai. Perhatikan waktu pengerjaan!',
-        'ujian-view': 'Halaman ini berisi daftar ujian. Pastikan Anda siap sebelum memulai karena waktu pengerjaan terbatas.',
-        'tugas-akhir-view': 'Ajukan proposal tugas akhir Anda di sini. Setelah disetujui, Anda dapat melihat timeline dan feedback dari dosen.',
-        'kuis-session-view': 'Jawab setiap pertanyaan dan gunakan tombol navigasi untuk berpindah antar soal. Selesaikan sebelum waktu habis!',
-        'admin-dashboard-view': 'Selamat datang, Admin. Dari sini Anda dapat mengelola seluruh aspek akademik portal, mulai dari tugas, kuis, hingga penilaian.',
-        'admin-tugas-view': 'Buat tugas baru atau edit yang sudah ada. Semua tugas yang Anda buat akan langsung tampil di dasbor siswa.',
-        'admin-kuis-ujian-view': 'Kelola kuis dan ujian. Anda bisa membuat soal, mengatur durasi, dan melihat daftar kuis/ujian yang telah dibuat.',
-        'admin-ta-review-view': 'Review proposal tugas akhir yang diajukan oleh siswa. Berikan feedback dan setujui proposal untuk memulai tahap pengerjaan.',
-        'admin-penilaian-view': 'Pilih salah satu tugas dari daftar untuk melihat siapa saja yang sudah mengumpulkan. Berikan nilai dan feedback pada halaman ini.',
-    };
+    // --- FUNGSI KELOLA PROFIL SISWA (BARU) ---
+    async function renderAdminProfilView() {
+        updateView('admin-profil-view');
+        showLoading('Memuat daftar siswa...');
+        document.getElementById('search-user-input').value = '';
+        const listDiv = document.getElementById('user-profile-list');
+        listDiv.innerHTML = '';
+        
+        try {
+            const snapshot = await db.collection('users').where('role', '==', 'siswa').get();
+            allStudentsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                .sort((a, b) => a.name.localeCompare(b.name)); // Urutkan berdasarkan nama
+            
+            drawStudentProfileList(allStudentsCache);
+        } catch (err) {
+            listDiv.innerHTML = '<p>Gagal memuat daftar siswa.</p>';
+        } finally {
+            hideLoading();
+        }
+    }
+    
+    // Fungsi untuk menggambar daftar siswa (digunakan oleh load awal dan filter)
+    function drawStudentProfileList(users) {
+        const listDiv = document.getElementById('user-profile-list');
+        listDiv.innerHTML = '';
+        
+        if (users.length === 0) {
+            listDiv.innerHTML = '<p>Tidak ada siswa yang cocok.</p>';
+            return;
+        }
 
-    helpBubble.onclick = () => {
-        const message = helpMessages[currentViewId] || 'Tidak ada bantuan untuk halaman ini.';
-        showModal('Bantuan', message);
+        users.forEach(user => {
+            const card = document.createElement('div');
+            card.className = 'user-profile-card';
+            
+            // Definisikan nilai default agar tidak 'undefined' di HTML
+            const nilai = {
+                t1: user.nilai_t1 || '', t2: user.nilai_t2 || '', t3: user.nilai_t3 || '', t4: user.nilai_t4 || '',
+                t5: user.nilai_t5 || '', t6: user.nilai_t6 || '', t7: user.nilai_t7 || '', t8: user.nilai_t8 || '',
+                uts: user.nilai_uts || '', uas: user.nilai_uas || ''
+            };
+
+            // HTML Baru untuk form profil
+            card.innerHTML = `
+                <h4>${user.name}</h4>
+                <p>${user.email}</p>
+                <form class="profile-update-form" data-uid="${user.id}">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label style="flex-basis: 100px;">Semester:</label>
+                        <input type="number" class="semester-input" value="${user.semester || 1}" min="1" style="width: 100px;">
+                    </div>
+
+                    <label style="font-weight: 600; margin-top: 15px; margin-bottom: 10px; display: block; border-top: 1px solid #eee; padding-top: 15px;">Input Nilai (Skala 0-100):</label>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px;">
+                        <input type="number" class="nilai-input" placeholder="Tugas 1" value="${nilai.t1}" min="0" max="100" title="Tugas 1">
+                        <input type="number" class="nilai-input" placeholder="Tugas 2" value="${nilai.t2}" min="0" max="100" title="Tugas 2">
+                        <input type="number" class="nilai-input" placeholder="Tugas 3" value="${nilai.t3}" min="0" max="100" title="Tugas 3">
+                        <input type="number" class="nilai-input" placeholder="Tugas 4" value="${nilai.t4}" min="0" max="100" title="Tugas 4">
+                        <input type="number" class="nilai-input" placeholder="Tugas 5" value="${nilai.t5}" min="0" max="100" title="Tugas 5">
+                        <input type="number" class="nilai-input" placeholder="Tugas 6" value="${nilai.t6}" min="0" max="100" title="Tugas 6">
+                        <input type="number" class="nilai-input" placeholder="Tugas 7" value="${nilai.t7}" min="0" max="100" title="Tugas 7">
+                        <input type="number" class="nilai-input" placeholder="Tugas 8" value="${nilai.t8}" min="0" max="100" title="Tugas 8">
+                        <input type="number" class="nilai-input" placeholder="UTS" value="${nilai.uts}" min="0" max="100" title="Nilai UTS" style="background-color: #f0f4f8; border: 2px solid var(--primary-color);">
+                        <input type="number" class="nilai-input" placeholder="UAS" value="${nilai.uas}" min="0" max="100" title="Nilai UAS" style="background-color: #f0f4f8; border: 2px solid var(--primary-color);">
+                    </div>
+
+                    <div class="form-group" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
+                        <button type="button" class="btn btn-secondary btn-sm hitung-rata-rata" style="width: auto;">Hitung Rata-rata</button>
+                        <label style="flex-shrink: 0; margin-left: 10px; font-weight: 600;">Hasil IPS (0-4.00):</label>
+                        <input type="text" class="ips-display" value="${user.ips || 0.00}" readonly style="font-weight: bold; background-color: #eee; width: 80px;">
+                        <button type="submit" class="btn btn-success btn-sm" style="width: auto; margin-left: auto;">Simpan Perubahan</button>
+                    </div>
+                </form>
+            `;
+            listDiv.appendChild(card);
+        });
+    }
+
+    // Listener untuk filter pencarian (BARU)
+    document.getElementById('search-user-input').onkeyup = (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filteredStudents = allStudentsCache.filter(user => 
+            user.name.toLowerCase().includes(searchTerm) || 
+            user.email.toLowerCase().includes(searchTerm)
+        );
+        drawStudentProfileList(filteredStudents);
     };
+    
+    // --- LISTENER BARU UNTUK KELOLA PROFIL ---
+    
+    // Listener untuk tombol "Hitung Rata-rata"
+    document.getElementById('user-profile-list').addEventListener('click', (e) => {
+        if (e.target.classList.contains('hitung-rata-rata')) {
+            e.preventDefault();
+            const form = e.target.closest('.profile-update-form');
+            if (!form) return;
+
+            const nilaiInputs = form.querySelectorAll('.nilai-input');
+            let totalNilai = 0;
+            let jumlahNilai = 0;
+
+            nilaiInputs.forEach(input => {
+                const nilai = parseFloat(input.value);
+                if (!isNaN(nilai) && input.value.trim() !== '') {
+                    totalNilai += nilai;
+                    jumlahNilai++;
+                }
+            });
+
+            // Rata-rata dihitung dari nilai 0-100
+            const rataRata = (jumlahNilai > 0) ? (totalNilai / jumlahNilai) : 0;
+            // Konversi ke skala IPS 4.00
+            const ips = (rataRata / 100) * 4; 
+
+            const ipsDisplay = form.querySelector('.ips-display');
+            if (ipsDisplay) {
+                ipsDisplay.value = ips.toFixed(2);
+            }
+        }
+    });
+
+    // Listener untuk simpan data profil (DIMODIFIKASI)
+    document.getElementById('user-profile-list').addEventListener('submit', async (e) => {
+        if(e.target.classList.contains('profile-update-form')) {
+            e.preventDefault();
+            const form = e.target;
+            const uid = form.dataset.uid;
+            const btn = form.querySelector('button[type="submit"]');
+            
+            const nilaiInputs = form.querySelectorAll('.nilai-input');
+            
+            const payload = {
+                semester: parseInt(form.querySelector('.semester-input').value) || 1,
+                ips: parseFloat(form.querySelector('.ips-display').value).toFixed(2) || 0.00,
+                
+                // Simpan 10 nilai (gunakan 'null' jika kosong)
+                nilai_t1: parseFloat(nilaiInputs[0].value) || null,
+                nilai_t2: parseFloat(nilaiInputs[1].value) || null,
+                nilai_t3: parseFloat(nilaiInputs[2].value) || null,
+                nilai_t4: parseFloat(nilaiInputs[3].value) || null,
+                nilai_t5: parseFloat(nilaiInputs[4].value) || null,
+                nilai_t6: parseFloat(nilaiInputs[5].value) || null,
+                nilai_t7: parseFloat(nilaiInputs[6].value) || null,
+                nilai_t8: parseFloat(nilaiInputs[7].value) || null,
+                nilai_uts: parseFloat(nilaiInputs[8].value) || null,
+                nilai_uas: parseFloat(nilaiInputs[9].value) || null,
+            };
+            
+            showLoading('Menyimpan data...');
+            btn.disabled = true;
+            try {
+                await db.collection('users').doc(uid).update(payload);
+                
+                // Update cache lokal agar data tetap sinkron
+                const userInCache = allStudentsCache.find(u => u.id === uid);
+                if(userInCache) {
+                    Object.assign(userInCache, payload);
+                }
+                showModal('Sukses', 'Data profil siswa berhasil diperbarui.');
+            } catch (err) {
+                showModal('Error', 'Gagal memperbarui data.');
+            } finally {
+                hideLoading();
+                btn.disabled = false;
+            }
+        }
+    });
 
 });
 </script>
 </body>
 </html>
-
