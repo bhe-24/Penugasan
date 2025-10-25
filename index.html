@@ -211,7 +211,8 @@
                  <h2 id="welcome-user" style="text-align:left; margin:0;"></h2>
                  <button id="logout-btn" class="btn btn-danger btn-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
             </div>
-            <div id="main-dashboard-grid" class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <!-- [PERBAIKAN] Inline style 'grid-template-columns: repeat(3, 1fr);' dihapus agar mengikuti style admin (2 kolom) -->
+            <div id="main-dashboard-grid" class="dashboard-grid">
                  <div class="dashboard-card tugas" id="tugas-menu"> <i class="fa-solid fa-pencil-alt"></i> <h3>Tugas Harian</h3> </div>
                  <div class="dashboard-card tugas-akhir" id="tugas-akhir-menu"> <i class="fa-solid fa-book-bookmark"></i> <h3>Proposal Novel</h3> </div>
                  <div class="dashboard-card profil" id="profil-menu"> <i class="fa-solid fa-user"></i> <h3>Profil Saya</h3> </div>
@@ -1260,6 +1261,7 @@
 </script>
 </body>
 </html>
+
 
 
 
