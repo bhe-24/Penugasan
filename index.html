@@ -383,6 +383,20 @@
     // --- FUNGSI UTILITAS ---
     const showLoading = (message) => { loadingText.textContent = message; loadingOverlay.classList.remove('hidden'); };
     const hideLoading = () => loadingOverlay.classList.add('hidden');
+    
+    // [MODIFIKASI] Fungsi helper untuk mengubah newline (\n) menjadi <br>
+    const nl2br = (str) => {
+        if (!str) return '<i>(Tidak ada jawaban)</i>';
+        // 1. Escape HTML entities dulu untuk keamanan
+        let safeStr = str.replace(/&/g, "&amp;")
+                         .replace(/</g, "&lt;")
+                         .replace(/>/g, "&gt;")
+                         .replace(/"/g, "&quot;")
+                         .replace(/'/g, "&#039;");
+        // 2. Baru ganti newline dengan <br>
+        return safeStr.replace(/\n/g, '<br>');
+    }
+
     const updateView = (targetId) => {
         document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
         const targetView = document.getElementById(targetId);
@@ -1040,12 +1054,19 @@
                 const buttonText = isGraded ? 'Tersimpan' : 'Simpan Nilai';
                 const buttonClass = isGraded ? 'btn-secondary' : 'btn-success';
                 const statusTag = `<span class="tag ${isGraded ? 'tag-blue' : 'tag-green'}">${isGraded ? 'Sudah Dinilai' : 'Sudah Mengumpulkan'}</span>`;
+                
+                // [MODIFIKASI] Tampilkan jawaban esai dengan format
                 let jawabanHTML = '';
                 if (submission.fileUrl) {
                     jawabanHTML = `<p><strong>File:</strong> <a href="${submission.fileUrl}" target="_blank" class="btn btn-secondary download-link"><i class="fa fa-download"></i> Unduh (${submission.fileName || 'file'})</a></p>`;
                 } else {
-                    jawabanHTML = `<p><strong>Jawaban:</strong> ${submission.jawabanTeks || '<i>N/A</i>'}</p>`;
+                    // [MODIFIKASI] Tampilkan jawaban dengan format newline
+                    jawabanHTML = `<p style="text-align: left; margin-bottom: 5px;"><strong>Jawaban Siswa:</strong></p>
+                                   <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; background: #fdfdfd; max-height: 250px; overflow-y: auto; text-align: left; line-height: 1.5; white-space: normal;">
+                                      ${nl2br(submission.jawabanTeks)}
+                                   </div>`;
                 }
+
                 card.innerHTML = `
                     <div class="card-header"><h3>${submission.studentName}</h3>${statusTag}</div>
                     ${jawabanHTML}
