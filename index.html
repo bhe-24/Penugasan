@@ -115,7 +115,67 @@
         .submission-success-view button { margin-top: 20px; }
 
         .profile-info { text-align: center; }
-        .profile-pic { width: 120px; height: 120px; border-radius: 50%; background-color: var(--light-gray); margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; font-size: 4em; color: var(--secondary-color); }
+        .profile-pic { 
+            width: 120px; 
+            height: 120px; 
+            border-radius: 50%; 
+            margin: 0 auto 20px auto; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 2.5em; 
+            font-weight: bold;
+            color: white;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .profile-pic.good { background: linear-gradient(135deg, #28a745, #20c997); }
+        .profile-pic.warning { 
+            background: linear-gradient(135deg, #f7a04a, #ffc107); 
+            animation: pulse 2s infinite;
+        }
+        .profile-pic.warning::after {
+            content: '\f071';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            bottom: -10px;
+            right: -5px;
+            background: var(--danger-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .ips-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            color: #856404;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ips-warning i {
+            color: var(--accent-color);
+            font-size: 1.2em;
+        }
+        
         .profile-info h3 { margin: 0; }
         .profile-info p { color: var(--gray-color); margin-bottom: 25px; }
         .profile-details { text-align: left; }
@@ -779,12 +839,25 @@
         // [FIX] Tambahkan kembali tampilan Semester dan IPS
         const displayIPS = (parseFloat(currentUserData.ips) || 0).toFixed(2);
         
+        // Tentukan kelas untuk foto profil berdasarkan IPS
+        const ipsValue = parseFloat(currentUserData.ips) || 0;
+        const profilePicClass = ipsValue < 3.0 ? 'warning' : 'good';
+        
         // Ubah dari display statis menjadi form
         contentDiv.className = 'profile-info'; // Hapus 'item-card'
         contentDiv.innerHTML = `
-            <div class="profile-pic">${initial}</div>
+            <div class="profile-pic ${profilePicClass}">${displayIPS}</div>
             <h3>${currentUserData.name}</h3>
             <p>${currentUserData.email}</p>
+            
+            ${ipsValue < 3.0 ? `
+            <div class="ips-warning">
+                <i class="fa-solid fa-exclamation-triangle"></i>
+                <div>
+                    <strong>Perhatian!</strong> IPS Anda di bawah 3.00. Segera hubungi wali kelas untuk mendapatkan nilai tambahan.
+                </div>
+            </div>
+            ` : ''}
 
             <!-- [FIX] Bagian Semester & IPS ditambahkan kembali -->
             <div class="profile-details" style="margin-bottom: 25px;">
@@ -1463,4 +1536,3 @@
 </script>
 </body>
 </html>
-
