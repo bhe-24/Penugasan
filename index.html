@@ -328,9 +328,21 @@
                 <input type="hidden" id="edit-task-id">
                 <div class="form-group"><label for="judul-tugas">Judul Tugas</label><input type="text" id="judul-tugas" required></div>
                 <div class="form-group"><label for="matkul-tugas">Mata Pelajaran</label><input type="text" id="matkul-tugas" required></div>
-                <div class="form-group"><label for="tipe-tugas">Tipe Tugas</label><select id="tipe-tugas"><option value="Esai">Esai</option><option value="Dokumen">Dokumen</option></select></div>
+                <div class="form-group"><label for="tipe-tugas">Tipe Tugas</label><select id="tipe-tugas" class="form-control"><option value="Esai">Esai</option><option value="Dokumen">Dokumen</option></select></div>
                 <div class="form-group"><label for="instruksi-tugas">Instruksi</label><textarea id="instruksi-tugas" rows="4" required></textarea></div>
-                <div class="form-group"><label for="deadline-tugas">Deadline</label><input type="datetime-local" id="deadline-tugas" required></div>
+                <div class="form-group"><label for="deadline-tugas">Deadline</label><input type="datetime-local" id="deadline-tugas" class="form-control" required></div>
+                
+                <!-- [BARU] Tambahan Semester -->
+                <div class="form-group">
+                    <label for="semester-tugas">Semester</label>
+                    <select id="semester-tugas" class="form-control" required>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                    </select>
+                </div>
+                <!-- [AKHIR] Tambahan Semester -->
+                
                 <button type="submit" class="btn btn-success">Simpan Tugas</button>
                 <button type="button" id="cancel-edit-task-btn" class="btn btn-secondary hidden" style="margin-top:10px;">Batal Edit</button>
             </form>
@@ -345,7 +357,7 @@
             <h2>Beri Nilai Tugas Harian</h2>
             <div class="form-group">
                 <label for="grading-assignment-selector">Pilih Tugas untuk Dinilai:</label>
-                <select id="grading-assignment-selector"></select>
+                <select id="grading-assignment-selector" class="form-control"></select>
             </div>
             <div id="student-grading-list"></div>
         </div>
@@ -354,12 +366,12 @@
             <h2>Kelola Profil Siswa</h2>
             <!-- --- FORM TAMBAH SISWA BARU --- -->
             <form id="add-student-form">
-                <input type="email" id="add-student-email" class="form-group" placeholder="Masukkan email siswa..." required>
+                <input type="email" id="add-student-email" class="form-control" placeholder="Masukkan email siswa..." required>
                 <button type="submit" id="add-student-btn" class="btn btn-sm btn-success"><i class="fa-solid fa-plus"></i> Cari & Tambah Siswa</button>
             </form>
             <hr style="margin: 20px 0;">
             <!-- --- AKHIR FORM --- -->
-            <input type="text" id="search-user-input" placeholder="Saring nama atau email siswa...">
+            <input type="text" id="search-user-input" class="form-control" placeholder="Saring nama atau email siswa...">
             <div id="user-profile-list" style="max-height: 400px; overflow-y: auto;"></div>
         </div>
 
@@ -633,6 +645,7 @@
         showLoading('Memuat tugas...');
         try {
             // [PATH v9+ & SINTAKS v9+] Menggunakan query(), collection(), orderBy(), getDocs()
+            // Ambil SEMUA tugas dulu
             const assignmentsQuery = query(collection(db, 'assignments'), orderBy('createdAt', 'desc')); // (DIKEMBALIKAN)
             const assignmentsSnap = await getDocs(assignmentsQuery);
             const assignments = assignmentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -643,10 +656,21 @@
             studentSubmissions = {};
             submissionsSnap.docs.forEach(doc => { studentSubmissions[doc.data().assignmentId] = { id: doc.id, ...doc.data() }; });
 
+            // [BARU] Filter tugas berdasarkan semester siswa
+            const userSemester = currentUserData.semester || 1; // Ambil semester siswa (default 1)
+            const filteredAssignments = assignments.filter(a => {
+                // (parseInt(a.semester, 10) || 1) -> Ambil semester tugas, default 1 jika blm di-set
+                // Kita bandingkan (angka == angka)
+                return (parseInt(a.semester, 10) || 1) === userSemester;
+            });
+
             listDiv.innerHTML = '';
-            if (assignments.length === 0) { listDiv.innerHTML = '<h3>Belum ada tugas saat ini.</h3>'; }
-            else {
-                assignments.forEach(a => {
+            // [MODIFIKASI] Cek 'filteredAssignments' bukan 'assignments'
+            if (filteredAssignments.length === 0) { 
+                listDiv.innerHTML = '<h3>Belum ada tugas untuk semester Anda saat ini.</h3>'; 
+            } else {
+                // [MODIFIKASI] Loop 'filteredAssignments' bukan 'assignments'
+                filteredAssignments.forEach(a => {
                     const card = document.createElement('div');
                     card.className = 'item-card clickable';
                     const deadline = new Date(a.deadline);
@@ -680,8 +704,8 @@
             let formHTML = '';
             if (isClosed) { formHTML = '<div class="tag tag-gray" style="text-align:center;padding:12px;">Tugas sudah ditutup.</div>'; }
             else {
-                if (assignment.tipe === 'Esai') { formHTML = `<form id="submit-form"><div class="form-group"><label>Jawaban Esai Anda</label><textarea id="jawaban-teks" rows="10" required></textarea></div><button type="submit" class="btn">Kirim Jawaban</button></form>`; }
-                else if (assignment.tipe === 'Dokumen') { formHTML = `<form id="submit-form"><div class="form-group"><label>Unggah File (Maks 2MB)</label><input type="file" id="jawaban-file" required></div><button type="submit" class="btn">Kirim File</button></form>`; }
+                if (assignment.tipe === 'Esai') { formHTML = `<form id="submit-form"><div class="form-group"><label>Jawaban Esai Anda</label><textarea id="jawaban-teks" rows="10" required class="form-control"></textarea></div><button type="submit" class="btn">Kirim Jawaban</button></form>`; }
+                else if (assignment.tipe === 'Dokumen') { formHTML = `<form id="submit-form"><div class="form-group"><label>Unggah File (Maks 2MB)</label><input type="file" id="jawaban-file" required class="form-control"></div><button type="submit" class="btn">Kirim File</button></form>`; }
             }
             contentHTML += `<h2>${assignment.judul}</h2><p><strong>Oleh:</strong> ${assignment.namaPengajar}</p><p><strong>Instruksi:</strong> ${assignment.instruksi}</p><hr>${formHTML}`;
         }
@@ -747,9 +771,9 @@
                 contentDiv.innerHTML = `
                     <p style="text-align: center; margin-bottom: 20px;">Anda belum mengajukan proposal novel. Silakan isi form di bawah ini.</p>
                     <form id="propose-ta-form">
-                        <div class="form-group"><label for="ta-title">Judul Novel</label><input type="text" id="ta-title" required></div>
-                        <div class="form-group"><label for="ta-sinopsis">Sinopsis</label><textarea id="ta-sinopsis" rows="6" required></textarea></div>
-                        <div class="form-group"><label for="ta-naskah">Unggah Naskah (Opsional, PDF/DOCX, Maks 10MB)</label><input type="file" id="ta-naskah" accept=".pdf,.doc,.docx"></div>
+                        <div class="form-group"><label for="ta-title">Judul Novel</label><input type="text" id="ta-title" class="form-control" required></div>
+                        <div class="form-group"><label for="ta-sinopsis">Sinopsis</label><textarea id="ta-sinopsis" rows="6" class="form-control" required></textarea></div>
+                        <div class="form-group"><label for="ta-naskah">Unggah Naskah (Opsional, PDF/DOCX, Maks 10MB)</label><input type="file" id="ta-naskah" class="form-control" accept=".pdf,.doc,.docx"></div>
                         <button type="submit" class="btn">Ajukan Proposal</button>
                     </form>`;
 
@@ -960,7 +984,11 @@
                     const task = {id: doc.id, ...doc.data()};
                     const card = document.createElement('div');
                     card.className = 'item-card';
-                    card.innerHTML = `<div class="card-header"><h3>${task.judul}</h3><div class="card-actions"><button class="btn btn-secondary btn-icon btn-sm edit-task" data-id="${task.id}"><i class="fa fa-edit"></i></button><button class="btn btn-danger btn-icon btn-sm delete-task" data-id="${task.id}"><i class="fa fa-trash"></i></button></div></div><p>${task.mapel}</p>`;
+                    
+                    // [MODIFIKASI] Tambah tag semester
+                    const semesterTag = `<span class="tag tag-blue" style="margin-left: 10px;">Semester ${task.semester || '1'}</span>`;
+                    card.innerHTML = `<div class="card-header"><h3>${task.judul} ${semesterTag}</h3><div class="card-actions"><button class="btn btn-secondary btn-icon btn-sm edit-task" data-id="${task.id}"><i class="fa fa-edit"></i></button><button class="btn btn-danger btn-icon btn-sm delete-task" data-id="${task.id}"><i class="fa fa-trash"></i></button></div></div><p>${task.mapel}</p>`;
+
                     listDiv.appendChild(card);
                 });
             }
@@ -974,6 +1002,7 @@
             judul: document.getElementById('judul-tugas').value, mapel: document.getElementById('matkul-tugas').value,
             tipe: document.getElementById('tipe-tugas').value, instruksi: document.getElementById('instruksi-tugas').value,
             deadline: document.getElementById('deadline-tugas').value, namaPengajar: currentUserData.name,
+            semester: parseInt(document.getElementById('semester-tugas').value, 10), // [BARU] Simpan sebagai angka
         };
         if (!editId) payload.createdAt = serverTimestamp(); // [SINTAKS v9+]
         showLoading('Menyimpan tugas...');
@@ -1018,6 +1047,8 @@
                     document.getElementById('tipe-tugas').value = data.tipe;
                     document.getElementById('instruksi-tugas').value = data.instruksi;
                     document.getElementById('deadline-tugas').value = data.deadline;
+                    // [BARU] Set nilai semester saat edit
+                    document.getElementById('semester-tugas').value = data.semester || '1'; // Default ke '1' jika blm ada
                     document.getElementById('cancel-edit-task-btn').classList.remove('hidden');
                     window.scrollTo(0, document.body.scrollHeight);
                 }
@@ -1052,7 +1083,7 @@
                     ${fileHTML}
                     <div class="form-group" style="margin-top: 15px;">
                         <label>Status:</label>
-                        <select class="status-selector" data-id="${proposal.id}">
+                        <select class="status-selector form-control" data-id="${proposal.id}">
                             <option value="Menunggu Review" ${proposal.status === 'Menunggu Review' ? 'selected' : ''}>Menunggu Review</option>
                             <option value="Disetujui" ${proposal.status === 'Disetujui' ? 'selected' : ''}>Disetujui</option>
                             <option value="Revisi" ${proposal.status === 'Revisi' ? 'selected' : ''}>Perlu Revisi</option>
@@ -1060,7 +1091,7 @@
                     </div>
                     <div class="form-group">
                         <label>Catatan/Feedback:</label>
-                        <textarea class="notes-input" rows="3" data-id="${proposal.id}">${proposal.feedback || ''}</textarea>
+                        <textarea class="notes-input form-control" rows="3" data-id="${proposal.id}">${proposal.feedback || ''}</textarea>
                     </div>
                     <button class="btn btn-success btn-sm save-ta-review" data-id="${proposal.id}" style="width:auto;">Simpan Status</button>`;
                 listDiv.appendChild(card);
@@ -1094,7 +1125,7 @@
             const snapshot = await getDocs(q);
             const assignments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             assignmentSelector.innerHTML = '<option value="">-- Pilih Tugas --</option>';
-            assignments.forEach(a => { assignmentSelector.innerHTML += `<option value="${a.id}">${a.judul}</option>`; });
+            assignments.forEach(a => { assignmentSelector.innerHTML += `<option value="${a.id}">${a.judul} (Sem: ${a.semester || 1})</option>`; }); // [MODIFIKASI] Tampilkan semester
             studentGradingList.innerHTML = '<p>Silakan pilih tugas untuk memulai penilaian.</p>';
         } catch(e) { studentGradingList.innerHTML = '<p>Gagal memuat daftar tugas.</p>'; }
         finally { hideLoading(); }
@@ -1135,9 +1166,9 @@
                 } else {
                     // [MODIFIKASI] Tampilkan jawaban dengan format newline
                     jawabanHTML = `<p style="text-align: left; margin-bottom: 5px;"><strong>Jawaban Siswa:</strong></p>
-                                   <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; background: #fdfdfd; max-height: 250px; overflow-y: auto; text-align: left; line-height: 1.5; white-space: normal;">
-                                      ${nl2br(submission.jawabanTeks)}
-                                   </div>`;
+                                    <div style="border: 1px solid #ddd; padding: 12px; border-radius: 8px; background: #fdfdfd; max-height: 250px; overflow-y: auto; text-align: left; line-height: 1.5; white-space: normal;">
+                                        ${nl2br(submission.jawabanTeks)}
+                                    </div>`;
                 }
 
                 card.innerHTML = `
@@ -1146,9 +1177,9 @@
                     <form class="grading-form" data-submission-id="${submission.id}">
                         <div class="form-group">
                             <label>Nilai:</label>
-                            <input type="number" class="nilai-input" min="0" max="100" value="${submission.nilai || ''}" ${isDisabled}>
+                            <input type="number" class="nilai-input form-control" min="0" max="100" value="${submission.nilai || ''}" ${isDisabled}>
                             <label>Feedback:</label>
-                            <textarea rows="2" class="feedback-input" ${isDisabled}>${submission.feedback || ''}</textarea>
+                            <textarea rows="2" class="feedback-input form-control" ${isDisabled}>${submission.feedback || ''}</textarea>
                         </div>
                         <div class="grading-card-footer">
                             <button type="submit" class="btn ${buttonClass}" style="width: auto;" ${isDisabled}>${buttonText}</button>
@@ -1279,27 +1310,27 @@
             <form class="profile-update-form" data-uid="${user.id}">
                 <div class="form-group" style="margin-bottom: 10px;">
                     <label style="flex-basis: 100px;">Semester:</label>
-                    <input type="number" class="semester-input" value="${user.semester || 1}" min="1" style="width: 100px;">
+                    <input type="number" class="semester-input form-control" value="${user.semester || 1}" min="1" style="width: 100px;">
                 </div>
 
                 <label style="font-weight: 600; margin-top: 15px; margin-bottom: 10px; display: block; border-top: 1px solid #eee; padding-top: 15px;">Input Nilai (Skala 0-100):</label>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px;">
-                    <input type="number" class="nilai-input" placeholder="Tugas 1" value="${nilai.t1}" min="0" max="100" title="Tugas 1">
-                    <input type="number" class="nilai-input" placeholder="Tugas 2" value="${nilai.t2}" min="0" max="100" title="Tugas 2">
-                    <input type="number" class="nilai-input" placeholder="Tugas 3" value="${nilai.t3}" min="0" max="100" title="Tugas 3">
-                    <input type="number" class="nilai-input" placeholder="Tugas 4" value="${nilai.t4}" min="0" max="100" title="Tugas 4">
-                    <input type="number" class="nilai-input" placeholder="Tugas 5" value="${nilai.t5}" min="0" max="100" title="Tugas 5">
-                    <input type="number" class="nilai-input" placeholder="Tugas 6" value="${nilai.t6}" min="0" max="100" title="Tugas 6">
-                    <input type="number" class="nilai-input" placeholder="Tugas 7" value="${nilai.t7}" min="0" max="100" title="Tugas 7">
-                    <input type="number" class="nilai-input" placeholder="Tugas 8" value="${nilai.t8}" min="0" max="100" title="Tugas 8">
-                    <input type="number" class="nilai-input" placeholder="UTS" value="${nilai.uts}" min="0" max="100" title="Nilai UTS" style="background-color: #f0f4f8; border: 2px solid var(--primary-color);">
-                    <input type="number" class="nilai-input" placeholder="UAS" value="${nilai.uas}" min="0" max="100" title="Nilai UAS" style="background-color: #f0f4f8; border: 2px solid var(--primary-color);">
+                    <input type="number" class="nilai-input form-control" placeholder="Tugas 1" value="${nilai.t1}" min="0" max="100" title="Tugas 1">
+                    <input type="number" class="nilai-input form-control" placeholder="Tugas 2" value="${nilai.t2}" min="0" max="100" title="Tugas 2">
+                    <input type="number" class="nilai-input form-control" placeholder="Tugas 3" value="${nilai.t3}" min="0" max="100" title="Tugas 3">
+                    <input type="number" class="nilai-input form-control" placeholder="Tugas 4" value="${nilai.t4}" min="0" max="100" title="Tugas 4">
+                    <input type="number" class="nilai-input form-control" placeholder="Tugas 5" value="${nilai.t5}" min="0" max="100" title="Tugas 5">
+                    <input type="number" class="nilai-input form-control" placeholder="Tugas 6" value="${nilai.t6}" min="0" max="100" title="Tugas 6">
+                    <input type="number" class="nilai-input form-control" placeholder="Tugas 7" value="${nilai.t7}" min="0" max="100" title="Tugas 7">
+                    <input type="number" class="nilai-input form-control" placeholder="Tugas 8" value="${nilai.t8}" min="0" max="100" title="Tugas 8">
+                    <input type="number" class="nilai-input form-control" placeholder="UTS" value="${nilai.uts}" min="0" max="100" title="Nilai UTS" style="background-color: #f0f4f8; border: 2px solid var(--primary-color);">
+                    <input type="number" class="nilai-input form-control" placeholder="UAS" value="${nilai.uas}" min="0" max="100" title="Nilai UAS" style="background-color: #f0f4f8; border: 2px solid var(--primary-color);">
                 </div>
 
                 <div class="form-group" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
                     <button type="button" class="btn btn-secondary btn-sm hitung-rata-rata" style="width: auto;">Hitung Rata-rata</button>
                     <label style="flex-shrink: 0; margin-left: 10px; font-weight: 600;">Hasil IPS (0-4.00):</label>
-                    <input type="text" class="ips-display" value="${displayIPS}" readonly style="font-weight: bold; background-color: #eee; width: 80px;">
+                    <input type="text" class="ips-display form-control" value="${displayIPS}" readonly style="font-weight: bold; background-color: #eee; width: 80px;">
                     <button type="submit" class="btn btn-success btn-sm" style="width: auto; margin-left: auto;">Simpan Perubahan</button>
                 </div>
             </form>
