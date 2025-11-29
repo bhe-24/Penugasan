@@ -4,14 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Akademik - Cendekia Aksara</title>
-    <!-- Firebase SDK v9+ (Modular) -->
-    <!-- <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script> -->
-    <!-- <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script> -->
-    <!-- <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script> -->
-    <!-- <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script> -->
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap'); /* Untuk Judul KHS */
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
 
         :root {
@@ -19,6 +15,7 @@
             --success-color: #28a745; --danger-color: #dc3545; --light-bg: #f0f4f8;
             --white-color: #ffffff; --gray-color: #6c757d; --light-gray: #e9ecef;
             --dark-text: #343a40; --border-radius: 12px; --shadow: 0 8px 30px rgba(0, 40, 80, 0.1);
+            --khs-border-color: #1a365d; /* Biru tua untuk border KHS */
         }
 
         body {
@@ -83,6 +80,143 @@
         .dashboard-card.review { background-image: linear-gradient(45deg, #6610f2, #6f42c1); }
         .dashboard-card.profil { background-image: linear-gradient(45deg, #17a2b8, #20c997); }
         .dashboard-card.kelola-profil { background-image: linear-gradient(45deg, #343a40, #6c757d); }
+        .dashboard-card.kartu-studi { background-image: linear-gradient(45deg, #6f42c1, #e83e8c); }
+        /* [BARU] Style untuk kartu arsip admin */
+        .dashboard-card.arsip { background-image: linear-gradient(45deg, #374151, #1f2937); }
+
+        /* --- STYLE KHUSUS KHS (Sesuai Gambar Referensi) --- */
+        .khs-container {
+            background: white;
+            border: 5px solid var(--khs-border-color); /* Border Tebal Biru Tua */
+            padding: 40px 30px 20px 30px;
+            font-family: 'Times New Roman', serif; /* Font Serif untuk kesan formal */
+            color: black;
+            position: relative;
+            margin-top: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .khs-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .khs-header h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 24pt;
+            color: var(--khs-border-color);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .khs-header p {
+            font-family: 'Times New Roman', serif;
+            font-size: 14pt;
+            font-weight: bold;
+            color: var(--khs-border-color);
+            margin: 5px 0 0 0;
+        }
+
+        .khs-student-info {
+            margin-bottom: 20px;
+            font-size: 12pt;
+            font-weight: bold;
+            color: var(--khs-border-color);
+        }
+        
+        .khs-student-info table {
+            width: 100%;
+            border: none;
+        }
+        
+        .khs-student-info td {
+            padding: 2px 0;
+            vertical-align: top;
+        }
+        
+        .khs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            border: 2px solid var(--khs-border-color);
+        }
+        
+        .khs-table th, .khs-table td {
+            border: 2px solid var(--khs-border-color); /* Garis tebal */
+            padding: 8px 5px;
+            text-align: center;
+            font-size: 11pt;
+        }
+        
+        .khs-table th {
+            background-color: var(--khs-border-color);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .khs-table td:nth-child(2) { /* Kolom Mata Pelajaran */
+            text-align: center; /* Sesuai gambar, mapel juga center */
+        }
+
+        .khs-watermark {
+            position: absolute;
+            top: 55%; /* Geser sedikit agar di tengah tabel */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.08; /* Transparan */
+            z-index: 0;
+            width: 250px; /* Ukuran watermark logo */
+            height: auto;
+            pointer-events: none;
+        }
+
+        .khs-footer {
+            margin-top: 20px;
+            font-weight: bold;
+            color: var(--khs-border-color);
+            font-size: 12pt;
+        }
+
+        .khs-signature-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .signature-box {
+            text-align: center;
+            width: 250px;
+            color: var(--khs-border-color);
+            position: relative;
+        }
+        
+        .signature-stamp {
+            position: absolute;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-5deg); /* Sedikit miring */
+            width: 110px; /* Ukuran stempel */
+            height: auto;
+            z-index: 1;
+            /* mix-blend-mode: multiply;  Agar menyatu dgn background, tp html2canvas kadang bug dengan ini, jadi opacity saja cukup */
+        }
+
+        .khs-bottom-bar {
+            background-color: var(--khs-border-color);
+            color: white;
+            padding: 10px 15px;
+            font-size: 9pt;
+            text-align: left;
+            margin-top: 20px;
+            /* Melebarkan bar ke kiri dan kanan container */
+            margin-left: -30px;
+            margin-right: -30px;
+            margin-bottom: -20px; /* Menempel ke bawah */
+            font-family: 'Poppins', sans-serif; /* Font beda untuk footer agar terbaca jelas */
+        }
 
         .item-card, .grading-card {
             border: 1px solid var(--light-gray); padding: 20px; border-radius: var(--border-radius); margin-bottom: 15px;
@@ -206,6 +340,31 @@
             font-weight: 600; margin-bottom: 0;
         }
 
+        /* [BARU] Style untuk tabel arsip admin */
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        .log-table th, .log-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .log-table th {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        .log-table tr:nth-child(even) { background-color: #f9f9f9; }
+        .log-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+        .log-view { background-color: #e3f2fd; color: #0d47a1; }
+        .log-download { background-color: #e8f5e9; color: #1b5e20; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
         .progress-spinner { width: 60px; height: 60px; border-radius: 50%; border: 4px solid var(--light-gray); border-top-color: var(--primary-color); animation: spin 1s linear infinite; }
@@ -235,6 +394,9 @@
             .card-actions { margin-top: 10px; }
             #add-student-form { flex-direction: column; }
             #add-student-btn { width: 100%; }
+            .report-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .report-summary { flex-direction: column; align-items: flex-end; }
+            .summary-box { width: 100%; }
         }
     </style>
 </head>
@@ -277,6 +439,8 @@
             <div id="main-dashboard-grid" class="dashboard-grid">
                 <div class="dashboard-card tugas" id="tugas-menu"> <i class="fa-solid fa-pencil-alt"></i> <h3>Tugas Harian</h3> </div>
                 <div class="dashboard-card profil" id="profil-menu"> <i class="fa-solid fa-user"></i> <h3>Profil Saya</h3> </div>
+                <!-- [BARU] Menu Kartu Studi -->
+                <div class="dashboard-card kartu-studi" id="kartu-studi-menu"> <i class="fa-solid fa-graduation-cap"></i> <h3>Kartu Studi</h3> </div>
                 <a href="https://bhe-24.github.io/PortalKuis/" target="_blank" class="dashboard-card kuis"> <i class="fa-solid fa-list-check"></i> <h3>Portal Kuis</h3> </a>
                 <a href="https://bhe-24.github.io/PortalUjian/" target="_blank" class="dashboard-card ujian"> <i class="fa-solid fa-stopwatch"></i> <h3>Portal Ujian</h3> </a>
             </div>
@@ -294,6 +458,11 @@
             <h2>Profil Saya</h2>
             <div id="profil-content" class="profile-info"></div>
         </div>
+        <!-- [BARU] Halaman Kartu Studi -->
+        <div id="kartu-studi-view" class="view hidden">
+            <button class="btn btn-secondary back-to-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+            <div id="kartu-studi-content"></div>
+        </div>
 
         <!-- HALAMAN ADMIN -->
         <div id="admin-dashboard-view" class="view hidden">
@@ -302,8 +471,9 @@
                 <div class="dashboard-card tugas" id="admin-tugas-menu"> <i class="fa-solid fa-cogs"></i> <h3>Kelola Tugas Harian</h3> </div>
                 <div class="dashboard-card review" id="admin-penilaian-menu"> <i class="fa-solid fa-marker"></i> <h3>Beri Nilai Tugas</h3> </div>
                 <div class="dashboard-card kelola-profil" id="admin-profil-menu"> <i class="fa-solid fa-users-cog"></i> <h3>Kelola Profil Siswa</h3> </div>
-                <!-- [BARU] Tombol menu data diri admin -->
                 <div class="dashboard-card profil" id="admin-data-diri-menu"> <i class="fa-solid fa-address-card"></i> <h3>Data Diri Siswa</h3> </div>
+                <!-- [BARU] Menu Arsip KHS untuk Admin -->
+                <div class="dashboard-card arsip" id="admin-arsip-menu"> <i class="fa-solid fa-file-invoice"></i> <h3>Arsip Akses KHS</h3> </div>
                 <a href="https://bhe-24.github.io/PortalKuis/" target="_blank" class="dashboard-card kuis"> <i class="fa-solid fa-list-check"></i> <h3>Kelola Kuis</h3> </a>
                 <a href="https://bhe-24.github.io/PortalUjian/" target="_blank" class="dashboard-card ujian"> <i class="fa-solid fa-file-signature"></i> <h3>Kelola Ujian</h3> </a>
             </div>
@@ -362,11 +532,32 @@
             <div id="user-profile-list" style="max-height: 400px; overflow-y: auto;"></div>
         </div>
 
-        <!-- [BARU] Halaman Admin untuk melihat data diri siswa -->
         <div id="admin-data-diri-view" class="view hidden">
             <button class="btn btn-secondary back-to-admin-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
             <h2>Data Diri Siswa</h2>
             <div id="data-diri-list"></div>
+        </div>
+
+        <!-- [BARU] Halaman Arsip Admin -->
+        <div id="admin-arsip-view" class="view hidden">
+            <button class="btn btn-secondary back-to-admin-dashboard" style="width:auto; margin-bottom:20px;"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+            <h2>Arsip Aktivitas KHS</h2>
+            <p style="text-align: center; color: var(--gray-color); margin-bottom: 20px;">Memantau akses dan pengunduhan Kartu Hasil Studi siswa.</p>
+            <div style="overflow-x: auto;">
+                <table class="log-table">
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Nama Siswa</th>
+                            <th>Aktivitas</th>
+                            <th>Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody id="arsip-list-body">
+                        <!-- Data logs akan di-render di sini -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>
@@ -383,6 +574,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Script HTML2Canvas untuk Screenshot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script type="module">
     // --- [MIGRASI v9+] Impor Firebase modular ---
@@ -405,7 +599,6 @@
         query, 
         where, 
         addDoc, 
-        // mgetDocs, // [FIX] Hapus impor mgetDocs yang tidak ada
         orderBy, 
         limit,
         serverTimestamp,
@@ -421,7 +614,14 @@
 
     // --- KONFIGURASI FIREBASE ---
     // [PATH v9+] Konfigurasi tetap sama
-    const firebaseConfig = { apiKey: "AIzaSyDpUWUIzPXIZN6rrNtsIqcL6VfOE2RLVl0", authDomain: "mading-cf676.firebaseapp.com", projectId: "mading-cf676", storageBucket: "mading-cf676.appspot.com", messagingSenderId: "72175203671", appId: "1:72175203671:web:7a0676a55beb64bc96ba12" };
+    const firebaseConfig = { 
+        apiKey: "AIzaSyDpUWUIzPXIZN6rrNtsIqcL6VfOE2RLVl0", 
+        authDomain: "mading-cf676.firebaseapp.com", 
+        projectId: "mading-cf676", 
+        storageBucket: "mading-cf676.firebasestorage.app", 
+        messagingSenderId: "72175203671", 
+        appId: "1:72175203671:web:7a0676a55beb64bc96ba12" 
+    };
     
     // [SINTAKS v9+] Inisialisasi Firebase v9+
     const app = initializeApp(firebaseConfig);
@@ -615,6 +815,8 @@
     // --- EVENT LISTENER MENU SISWA ---
     document.getElementById('tugas-menu').onclick = () => renderTugasView();
     document.getElementById('profil-menu').onclick = () => renderProfilView();
+    // [BARU] Listener Kartu Studi
+    document.getElementById('kartu-studi-menu').onclick = () => renderKartuStudiView();
 
     // --- EVENT LISTENER MENU ADMIN ---
     document.getElementById('admin-tugas-menu').onclick = () => renderAdminTugasView();
@@ -622,6 +824,8 @@
     document.getElementById('admin-profil-menu').onclick = () => renderAdminProfilView();
     // [BARU] Listener untuk menu data diri admin
     document.getElementById('admin-data-diri-menu').onclick = () => renderAdminDataDiriView();
+    // [BARU] Listener untuk menu Arsip KHS admin
+    document.getElementById('admin-arsip-menu').onclick = () => renderAdminArsipView();
 
     // --- FUNGSI HALAMAN SISWA ---
     async function renderTugasView() {
@@ -750,6 +954,292 @@
         }
     }
     
+    // [BARU] Helper untuk Logging ke Firestore
+    async function logKHSAccess(action) {
+        try {
+            await addDoc(collection(db, 'khs_access_logs'), {
+                studentUid: currentUserData.uid,
+                studentName: currentUserData.name,
+                action: action, // 'VIEW' atau 'DOWNLOAD'
+                timestamp: serverTimestamp()
+            });
+        } catch (e) {
+            console.error("Gagal mencatat log:", e);
+        }
+    }
+
+    // [BARU] Fungsi Render Kartu Studi (DESAIN BARU)
+    window.renderKartuStudiView = function() {
+        // 1. Cek Kelengkapan Nilai
+        const requiredGrades = [
+            'nilai_t1', 'nilai_t2', 'nilai_t3', 'nilai_t4', 
+            'nilai_t5', 'nilai_t6', 'nilai_t7', 'nilai_t8', 
+            'nilai_uts', 'nilai_uas'
+        ];
+        
+        // Fungsi cek: nilai tidak boleh null, undefined, atau string kosong
+        const isComplete = requiredGrades.every(key => 
+            currentUserData[key] !== null && 
+            currentUserData[key] !== undefined && 
+            currentUserData[key] !== ''
+        );
+
+        if (!isComplete) {
+            showModal('Akses Ditolak', 'Mohon maaf, Kartu Hasil Studi (KHS) belum dapat diakses karena penilaian belum lengkap. Silakan hubungi admin atau tunggu hingga seluruh nilai diinput.');
+            return; // Stop eksekusi, jangan pindah view
+        }
+
+        // Jika lolos, catat log view
+        logKHSAccess('VIEW');
+
+        updateView('kartu-studi-view');
+        const container = document.getElementById('kartu-studi-content');
+        
+        // Helper
+        const formatScore = (val) => (val !== null && val !== undefined && val !== '') ? val : '-';
+        
+        // Data Mentah
+        const t1 = parseFloat(currentUserData.nilai_t1) || 0; const t2 = parseFloat(currentUserData.nilai_t2) || 0;
+        const t3 = parseFloat(currentUserData.nilai_t3) || 0; const t4 = parseFloat(currentUserData.nilai_t4) || 0;
+        const t5 = parseFloat(currentUserData.nilai_t5) || 0; const t6 = parseFloat(currentUserData.nilai_t6) || 0;
+        const t7 = parseFloat(currentUserData.nilai_t7) || 0; const t8 = parseFloat(currentUserData.nilai_t8) || 0;
+        const uts = parseFloat(currentUserData.nilai_uts) || 0; const uas = parseFloat(currentUserData.nilai_uas) || 0;
+
+        // Hitung Rata-rata per Mata Pelajaran (Asumsi 2 tugas per mapel)
+        // Jika salah satu kosong, tetap dibagi 2 atau dianggap 0? Kita anggap 0.
+        // Tapi untuk tampilan "Nilai", kita tampilkan dua-duanya seperti di gambar (85 | 78)
+        
+        // Fungsi helper untuk menghitung grade
+        const getGrade = (avg) => {
+            if (avg >= 85) return 'A';
+            if (avg >= 75) return 'B';
+            if (avg >= 60) return 'C';
+            if (avg >= 50) return 'D';
+            return 'E';
+        };
+
+        // Mata Pelajaran (Hardcoded sesuai gambar referensi, dipetakan ke Tugas 1-8)
+        const subjects = [
+            { no: 1, name: "Seni Menemukan Cerita", sks: 2, v1: formatScore(currentUserData.nilai_t1), v2: formatScore(currentUserData.nilai_t2), avg: (t1+t2)/2 },
+            { no: 2, name: "Seni Menghidupkan Dunia", sks: 2, v1: formatScore(currentUserData.nilai_t3), v2: formatScore(currentUserData.nilai_t4), avg: (t3+t4)/2 },
+            { no: 3, name: "Seni Menjalin Peristiwa", sks: 2, v1: formatScore(currentUserData.nilai_t5), v2: formatScore(currentUserData.nilai_t6), avg: (t5+t6)/2 },
+            { no: 4, name: "Seni Memoles Naskah", sks: 2, v1: formatScore(currentUserData.nilai_t7), v2: formatScore(currentUserData.nilai_t8), avg: (t7+t8)/2 },
+            { no: 5, name: "Ujian Tengah Semester", sks: 2, val: formatScore(currentUserData.nilai_uts), avg: uts, isExam: true },
+            { no: 6, name: "Ujian Akhir Semester", sks: 2, val: formatScore(currentUserData.nilai_uas), avg: uas, isExam: true },
+        ];
+
+        let totalSKS = 12;
+        let totalScore = 0;
+        let validSubjects = 0;
+
+        // Generate Rows
+        let rowsHTML = '';
+        subjects.forEach(s => {
+            // Hitung total untuk IPS (kasar)
+            if (s.avg > 0) {
+                totalScore += s.avg;
+                validSubjects++;
+            }
+
+            let nilaiCell = '';
+            if (s.isExam) {
+                nilaiCell = `<td colspan="2" style="text-align: center;">${s.val}</td>`;
+            } else {
+                nilaiCell = `<td style="border-right: 1px solid #000; width: 50px;">${s.v1}</td><td style="width: 50px;">${s.v2}</td>`;
+            }
+
+            // Grade hanya muncul jika nilai ada
+            let grade = '';
+            if ((s.isExam && s.val !== '-') || (!s.isExam && (s.v1 !== '-' || s.v2 !== '-'))) {
+                grade = getGrade(s.avg);
+            }
+
+            rowsHTML += `
+                <tr>
+                    <td>${s.no}.</td>
+                    <td style="text-align: left; padding-left: 15px;">${s.name}</td>
+                    <td>${s.sks}</td>
+                    ${nilaiCell}
+                    <td>${grade}</td>
+                </tr>
+            `;
+        });
+
+        // Hitung IPS (Indeks Penilaian Semester) - Logika sederhana: Rata-rata total / 25 (skala 4)
+        // Atau pakai data IPS yang sudah disimpan di user profile
+        let displayIPS = (parseFloat(currentUserData.ips) || 0).toFixed(2);
+
+        // Generate nomor dokumen unik
+        const docNumber = `KHS-CA-${new Date().getFullYear()}-${currentUserData.uid.substring(0,5).toUpperCase()}`;
+        const timestamp = new Date().getTime(); // [BARU] Timestamp untuk cache busting
+
+        // Template HTML
+        container.innerHTML = `
+            <div id="khs-download-area" class="khs-container">
+                <!-- Watermark Logo Baru dengan CrossOrigin & Timestamp -->
+                <img src="https://i.imgur.com/HDC6SWw.png" class="khs-watermark" alt="Watermark Cendekia Aksara" crossorigin="anonymous">
+                
+                <div class="khs-header">
+                    <!-- Logo Baru di Header dengan CrossOrigin & Timestamp -->
+                    <div style="margin-bottom: 10px;">
+                        <img src="https://i.imgur.com/HDC6SWw.png" alt="Logo Cendekia Aksara" style="height: 60px; display: block; margin: 0 auto;" crossorigin="anonymous">
+                    </div>
+                    <h2>KARTU HASIL STUDI</h2>
+                    <p>Sekolah Menulis Gratis Cendekia Aksara</p>
+                </div>
+
+                <div class="khs-student-info">
+                    <table>
+                        <tr>
+                            <td style="width: 120px;">Nama</td>
+                            <td style="width: 10px;">:</td>
+                            <td>${currentUserData.name}</td>
+                        </tr>
+                        <tr>
+                            <td>ID Siswa</td>
+                            <td>:</td>
+                            <td>${currentUserData.uid.substring(0, 10).toUpperCase()}</td> <!-- Pakai UID sbg ID -->
+                        </tr>
+                        <tr>
+                            <td>Semester</td>
+                            <td>:</td>
+                            <td>${currentUserData.semester || 1}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <table class="khs-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="width: 40px;">No.</th>
+                            <th rowspan="2">Mata Pelajaran</th>
+                            <th rowspan="2" style="width: 50px;">SKS</th>
+                            <th colspan="2">Nilai</th>
+                            <th rowspan="2" style="width: 60px;">Grade</th>
+                        </tr>
+                        <!-- Baris kosong untuk spacer header nilai, di-hidden karena merged di atas -->
+                    </thead>
+                    <tbody>
+                        ${rowsHTML}
+                        <tr style="font-weight: bold;">
+                            <td colspan="2" style="text-align: right; padding-right: 15px; border-right: none;">Total</td>
+                            <td style="border-left: none;">${totalSKS}</td>
+                            <td colspan="3" style="background-color: #f0f0f0;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="khs-footer">
+                    IPS (Indeks Penilaian Semester) : ${displayIPS}
+                </div>
+
+                <div class="khs-signature-section">
+                    <div class="signature-box">
+                        <p style="margin-bottom: 60px;">Mengetahui,<br>Kepala Cendekia</p>
+                        
+                        <!-- Cap Basah (Stempel) Gambar Baru dengan CrossOrigin & Timestamp -->
+                        <img src="https://i.imgur.com/YvrNYRw.png" class="signature-stamp" alt="Stempel Sah" crossorigin="anonymous">
+
+                        <p style="text-decoration: underline; font-weight: bold;">Mukhamad Bayu Aji</p>
+                    </div>
+                </div>
+
+                <div class="khs-bottom-bar">
+                    <strong>No. Dokumen:</strong> ${docNumber} <br>
+                    <strong>Catatan:</strong> Kartu Hasil Studi ini diterbitkan secara elektronik oleh sistem Cendekia Aksara. Dokumen ini sah dan tidak memerlukan tanda tangan basah tambahan jika diunduh melalui portal resmi. Segala bentuk perubahan pada data dokumen ini adalah tindakan ilegal.
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <p style="font-size: 0.8em; color: var(--gray-color);">Pastikan data sudah benar sebelum mengunduh.</p>
+                <button onclick="downloadKHS()" class="btn btn-primary btn-sm" style="width: auto;">
+                    <i class="fa fa-download"></i> Unduh KHS (HD)
+                </button>
+            </div>
+        `;
+    };
+
+    // Fungsi Download HD
+    window.downloadKHS = function() {
+        // Catat log download
+        logKHSAccess('DOWNLOAD');
+
+        const element = document.getElementById('khs-download-area');
+        
+        // Opsi html2canvas untuk kualitas tinggi
+        const options = {
+            scale: 2, // 2x resolusi untuk ketajaman (HD)
+            useCORS: true, // [PENTING] Mengaktifkan CORS untuk gambar eksternal
+            // allowTaint: true, // [HAPUS] Ini menyebabkan taint error saat toDataURL
+            backgroundColor: "#ffffff", // Pastikan background putih
+            logging: true
+        };
+
+        showLoading('Menyiapkan dokumen...');
+        
+        // Tunggu sebentar agar gambar selesai di-render ulang dengan atribut crossorigin
+        setTimeout(() => {
+            html2canvas(element, options).then(canvas => {
+                // Convert ke image
+                const image = canvas.toDataURL("image/png", 1.0);
+                
+                // Trigger download
+                const link = document.createElement('a');
+                link.download = `KHS_${currentUserData.name}_Sem${currentUserData.semester || 1}.png`;
+                link.href = image;
+                link.click();
+                
+                hideLoading();
+            }).catch(err => {
+                console.error(err);
+                hideLoading();
+                alert("Gagal mengunduh gambar. Pastikan koneksi internet stabil.");
+            });
+        }, 1000); // Delay 1 detik untuk loading gambar
+    }
+
+    // [BARU] Fungsi Render Halaman Arsip Admin
+    async function renderAdminArsipView() {
+        updateView('admin-arsip-view');
+        const tbody = document.getElementById('arsip-list-body');
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>';
+        
+        try {
+            // [PATH v9+ & SINTAKS v9+]
+            const q = query(collection(db, 'khs_access_logs'), orderBy('timestamp', 'desc'), limit(50));
+            const snapshot = await getDocs(q);
+            
+            tbody.innerHTML = '';
+            
+            if (snapshot.empty) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada aktivitas tercatat.</td></tr>';
+                return;
+            }
+
+            snapshot.forEach(doc => {
+                const log = doc.data();
+                const date = log.timestamp ? log.timestamp.toDate().toLocaleString('id-ID') : '-';
+                
+                // Style badge berdasarkan tipe aksi
+                const badgeClass = log.action === 'DOWNLOAD' ? 'log-download' : 'log-view';
+                const actionLabel = log.action === 'DOWNLOAD' ? 'Mengunduh KHS' : 'Melihat KHS';
+                const detailText = log.action === 'DOWNLOAD' ? 'Dokumen berhasil diunduh' : 'Akses halaman KHS';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${date}</td>
+                    <td><strong>${log.studentName}</strong></td>
+                    <td><span class="log-badge ${badgeClass}">${actionLabel}</span></td>
+                    <td>${detailText}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (err) {
+            console.error("Gagal memuat arsip:", err);
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Gagal memuat data arsip.</td></tr>';
+        }
+    }
+
     // [MODIFIKASI] Halaman profil diubah menjadi formulir
     function renderProfilView() {
         updateView('profil-view');
@@ -1238,8 +1728,8 @@
     document.getElementById('search-user-input').onkeyup = (e) => {
         const searchTerm = e.target.value.toLowerCase();
         // [FIX] Filter dari CACHE UTAMA (allStudentsCache) agar bisa mencari semua
-        const filteredStudents = allStudentsCache.filter(user =>
-            user.name.toLowerCase().includes(searchTerm) ||
+        const filteredStudents = allStudentsCache.filter(user => 
+            user.name.toLowerCase().includes(searchTerm) || 
             user.email.toLowerCase().includes(searchTerm)
         );
         // [FIX] Simpan hasil filter ke displayedStudents
