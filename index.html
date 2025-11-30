@@ -84,16 +84,35 @@
         /* [BARU] Style untuk kartu arsip admin */
         .dashboard-card.arsip { background-image: linear-gradient(45deg, #374151, #1f2937); }
 
-        /* --- STYLE KHUSUS KHS (Sesuai Gambar Referensi) --- */
+        /* --- STYLE KHUSUS KHS (Sesuai Gambar Referensi & Paten Ukuran) --- */
+        /* Wrapper agar bisa discroll di mobile */
+        .khs-wrapper {
+            width: 100%;
+            overflow-x: auto; /* Scroll horizontal jika layar sempit */
+            padding: 10px 0;
+            background-color: #f5f5f5; /* Background abu biar kartu menonjol */
+            border-radius: 8px;
+            display: flex;
+            justify-content: center; /* Center jika layar lebar */
+        }
+
         .khs-container {
             background: white;
-            border: 5px solid var(--khs-border-color); /* Border Tebal Biru Tua */
+            border: 5px solid var(--khs-border-color);
             padding: 40px 30px 20px 30px;
-            font-family: 'Times New Roman', serif; /* Font Serif untuk kesan formal */
+            font-family: 'Times New Roman', serif;
             color: black;
             position: relative;
-            margin-top: 20px;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            
+            /* --- [REVISI] UKURAN PATEN A5 --- */
+            /* A5 = 148mm x 210mm. Konversi ke px (approx 96dpi) => 560px width */
+            /* Menggunakan width tetap agar tidak mengecil di mobile */
+            width: 560px; 
+            min-width: 560px; /* Paksa minimal segini */
+            min-height: 794px; /* Proporsi tinggi A5 */
+            box-sizing: border-box; /* Agar padding tidak menambah lebar total */
+            margin: 0 auto; /* Tengah */
         }
         
         .khs-header {
@@ -143,7 +162,7 @@
         }
         
         .khs-table th, .khs-table td {
-            border: 2px solid var(--khs-border-color); /* Garis tebal */
+            border: 2px solid var(--khs-border-color);
             padding: 8px 5px;
             text-align: center;
             font-size: 11pt;
@@ -156,18 +175,18 @@
             text-transform: uppercase;
         }
         
-        .khs-table td:nth-child(2) { /* Kolom Mata Pelajaran */
-            text-align: center; /* Sesuai gambar, mapel juga center */
+        .khs-table td:nth-child(2) {
+            text-align: center;
         }
 
         .khs-watermark {
             position: absolute;
-            top: 55%; /* Geser sedikit agar di tengah tabel */
+            top: 55%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.08; /* Transparan */
+            opacity: 0.08;
             z-index: 0;
-            width: 250px; /* Ukuran watermark logo */
+            width: 250px;
             height: auto;
             pointer-events: none;
         }
@@ -197,11 +216,10 @@
             position: absolute;
             top: 0px;
             left: 50%;
-            transform: translateX(-50%) rotate(-5deg); /* Sedikit miring */
-            width: 110px; /* Ukuran stempel */
+            transform: translateX(-50%) rotate(-5deg);
+            width: 110px;
             height: auto;
             z-index: 1;
-            /* mix-blend-mode: multiply;  Agar menyatu dgn background, tp html2canvas kadang bug dengan ini, jadi opacity saja cukup */
         }
 
         .khs-bottom-bar {
@@ -215,7 +233,7 @@
             margin-left: -30px;
             margin-right: -30px;
             margin-bottom: -20px; /* Menempel ke bawah */
-            font-family: 'Poppins', sans-serif; /* Font beda untuk footer agar terbaca jelas */
+            font-family: 'Poppins', sans-serif;
         }
 
         .item-card, .grading-card {
@@ -1074,79 +1092,82 @@
         const timestamp = new Date().getTime(); // [BARU] Timestamp untuk cache busting
 
         // Template HTML
+        // [MODIFIKASI] Wrapper .khs-wrapper agar scrollable, tapi .khs-container ukurannya TETAP (fixed width)
         container.innerHTML = `
-            <div id="khs-download-area" class="khs-container">
-                <!-- Watermark Logo Baru dengan CrossOrigin & Timestamp -->
-                <img src="https://i.imgur.com/HDC6SWw.png" class="khs-watermark" alt="Watermark Cendekia Aksara" crossorigin="anonymous">
-                
-                <div class="khs-header">
-                    <!-- Logo Baru di Header dengan CrossOrigin & Timestamp -->
-                    <div style="margin-bottom: 10px;">
-                        <img src="https://i.imgur.com/HDC6SWw.png" alt="Logo Cendekia Aksara" style="height: 60px; display: block; margin: 0 auto;" crossorigin="anonymous">
+            <div class="khs-wrapper">
+                <div id="khs-download-area" class="khs-container">
+                    <!-- Watermark Logo Baru dengan CrossOrigin & Timestamp -->
+                    <img src="https://i.imgur.com/HDC6SWw.png" class="khs-watermark" alt="Watermark Cendekia Aksara" crossorigin="anonymous">
+                    
+                    <div class="khs-header">
+                        <!-- Logo Baru di Header dengan CrossOrigin & Timestamp -->
+                        <div style="margin-bottom: 10px;">
+                            <img src="https://i.imgur.com/HDC6SWw.png" alt="Logo Cendekia Aksara" style="height: 60px; display: block; margin: 0 auto;" crossorigin="anonymous">
+                        </div>
+                        <h2>KARTU HASIL STUDI</h2>
+                        <p>Sekolah Menulis Gratis Cendekia Aksara</p>
                     </div>
-                    <h2>KARTU HASIL STUDI</h2>
-                    <p>Sekolah Menulis Gratis Cendekia Aksara</p>
-                </div>
 
-                <div class="khs-student-info">
-                    <table>
-                        <tr>
-                            <td style="width: 120px;">Nama</td>
-                            <td style="width: 10px;">:</td>
-                            <td>${currentUserData.name}</td>
-                        </tr>
-                        <tr>
-                            <td>ID Siswa</td>
-                            <td>:</td>
-                            <td>${currentUserData.uid.substring(0, 10).toUpperCase()}</td> <!-- Pakai UID sbg ID -->
-                        </tr>
-                        <tr>
-                            <td>Semester</td>
-                            <td>:</td>
-                            <td>${currentUserData.semester || 1}</td>
-                        </tr>
+                    <div class="khs-student-info">
+                        <table>
+                            <tr>
+                                <td style="width: 120px;">Nama</td>
+                                <td style="width: 10px;">:</td>
+                                <td>${currentUserData.name}</td>
+                            </tr>
+                            <tr>
+                                <td>ID Siswa</td>
+                                <td>:</td>
+                                <td>${currentUserData.uid.substring(0, 10).toUpperCase()}</td> <!-- Pakai UID sbg ID -->
+                            </tr>
+                            <tr>
+                                <td>Semester</td>
+                                <td>:</td>
+                                <td>${currentUserData.semester || 1}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <table class="khs-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="width: 40px;">No.</th>
+                                <th rowspan="2">Mata Pelajaran</th>
+                                <th rowspan="2" style="width: 50px;">SKS</th>
+                                <th colspan="2">Nilai</th>
+                                <th rowspan="2" style="width: 60px;">Grade</th>
+                            </tr>
+                            <!-- Baris kosong untuk spacer header nilai, di-hidden karena merged di atas -->
+                        </thead>
+                        <tbody>
+                            ${rowsHTML}
+                            <tr style="font-weight: bold;">
+                                <td colspan="2" style="text-align: right; padding-right: 15px; border-right: none;">Total</td>
+                                <td style="border-left: none;">${totalSKS}</td>
+                                <td colspan="3" style="background-color: #f0f0f0;"></td>
+                            </tr>
+                        </tbody>
                     </table>
-                </div>
 
-                <table class="khs-table">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" style="width: 40px;">No.</th>
-                            <th rowspan="2">Mata Pelajaran</th>
-                            <th rowspan="2" style="width: 50px;">SKS</th>
-                            <th colspan="2">Nilai</th>
-                            <th rowspan="2" style="width: 60px;">Grade</th>
-                        </tr>
-                        <!-- Baris kosong untuk spacer header nilai, di-hidden karena merged di atas -->
-                    </thead>
-                    <tbody>
-                        ${rowsHTML}
-                        <tr style="font-weight: bold;">
-                            <td colspan="2" style="text-align: right; padding-right: 15px; border-right: none;">Total</td>
-                            <td style="border-left: none;">${totalSKS}</td>
-                            <td colspan="3" style="background-color: #f0f0f0;"></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="khs-footer">
-                    IPS (Indeks Penilaian Semester) : ${displayIPS}
-                </div>
-
-                <div class="khs-signature-section">
-                    <div class="signature-box">
-                        <p style="margin-bottom: 60px;">Mengetahui,<br>Kepala Cendekia</p>
-                        
-                        <!-- Cap Basah (Stempel) Gambar Baru dengan CrossOrigin & Timestamp -->
-                        <img src="https://i.imgur.com/YvrNYRw.png" class="signature-stamp" alt="Stempel Sah" crossorigin="anonymous">
-
-                        <p style="text-decoration: underline; font-weight: bold;">Mukhamad Bayu Aji</p>
+                    <div class="khs-footer">
+                        IPS (Indeks Penilaian Semester) : ${displayIPS}
                     </div>
-                </div>
 
-                <div class="khs-bottom-bar">
-                    <strong>No. Dokumen:</strong> ${docNumber} <br>
-                    <strong>Catatan:</strong> Kartu Hasil Studi ini diterbitkan secara elektronik oleh sistem Cendekia Aksara. Dokumen ini sah dan tidak memerlukan tanda tangan basah tambahan jika diunduh melalui portal resmi. Segala bentuk perubahan pada data dokumen ini adalah tindakan ilegal.
+                    <div class="khs-signature-section">
+                        <div class="signature-box">
+                            <p style="margin-bottom: 60px;">Mengetahui,<br>Kepala Cendekia</p>
+                            
+                            <!-- Cap Basah (Stempel) Gambar Baru dengan CrossOrigin & Timestamp -->
+                            <img src="https://i.imgur.com/YvrNYRw.png" class="signature-stamp" alt="Stempel Sah" crossorigin="anonymous">
+
+                            <p style="text-decoration: underline; font-weight: bold;">Mukhamad Bayu Aji</p>
+                        </div>
+                    </div>
+
+                    <div class="khs-bottom-bar">
+                        <strong>No. Dokumen:</strong> ${docNumber} <br>
+                        <strong>Catatan:</strong> Kartu Hasil Studi ini diterbitkan secara elektronik oleh sistem Cendekia Aksara. Dokumen ini sah dan tidak memerlukan tanda tangan basah tambahan jika diunduh melalui portal resmi. Segala bentuk perubahan pada data dokumen ini adalah tindakan ilegal.
+                    </div>
                 </div>
             </div>
             
