@@ -83,6 +83,8 @@
         .dashboard-card.kartu-studi { background-image: linear-gradient(45deg, #6f42c1, #e83e8c); }
         /* [BARU] Style untuk kartu arsip admin */
         .dashboard-card.arsip { background-image: linear-gradient(45deg, #374151, #1f2937); }
+        /* [BARU] Style untuk tombol Pustaka Materi */
+        .dashboard-card.pustaka { background-image: linear-gradient(45deg, #fd7e14, #d63384); }
 
         /* --- STYLE KHUSUS KHS (Sesuai Gambar Referensi & Paten Ukuran) --- */
         /* Wrapper agar bisa discroll di mobile */
@@ -275,9 +277,9 @@
             justify-content: center; 
             align-items: center; 
             font-size: 2.5em; 
-            font-weight: bold;
-            color: white;
-            position: relative;
+            font-weight: bold; 
+            color: white; 
+            position: relative; 
             transition: all 0.3s ease;
         }
         .profile-pic.good { background: linear-gradient(135deg, #28a745, #20c997); }
@@ -459,6 +461,9 @@
                 <div class="dashboard-card profil" id="profil-menu"> <i class="fa-solid fa-user"></i> <h3>Profil Saya</h3> </div>
                 <!-- [BARU] Menu Kartu Studi -->
                 <div class="dashboard-card kartu-studi" id="kartu-studi-menu"> <i class="fa-solid fa-graduation-cap"></i> <h3>Kartu Studi</h3> </div>
+                <!-- [BARU] Tombol Pustaka Materi -->
+                <a href="https://bhe-24.github.io/PustakaMateri/" target="_blank" class="dashboard-card pustaka"> <i class="fa-solid fa-book-atlas"></i> <h3>Pustaka Materi</h3> </a>
+                
                 <a href="https://bhe-24.github.io/PortalKuis/" target="_blank" class="dashboard-card kuis"> <i class="fa-solid fa-list-check"></i> <h3>Portal Kuis</h3> </a>
                 <a href="https://bhe-24.github.io/PortalUjian/" target="_blank" class="dashboard-card ujian"> <i class="fa-solid fa-stopwatch"></i> <h3>Portal Ujian</h3> </a>
             </div>
@@ -492,6 +497,10 @@
                 <div class="dashboard-card profil" id="admin-data-diri-menu"> <i class="fa-solid fa-address-card"></i> <h3>Data Diri Siswa</h3> </div>
                 <!-- [BARU] Menu Arsip KHS untuk Admin -->
                 <div class="dashboard-card arsip" id="admin-arsip-menu"> <i class="fa-solid fa-file-invoice"></i> <h3>Arsip Akses KHS</h3> </div>
+                
+                <!-- [BARU] Tombol Pustaka Materi untuk Admin -->
+                <a href="https://bhe-24.github.io/PustakaMateri/" target="_blank" class="dashboard-card pustaka"> <i class="fa-solid fa-book-atlas"></i> <h3>Pustaka Materi</h3> </a>
+
                 <a href="https://bhe-24.github.io/PortalKuis/" target="_blank" class="dashboard-card kuis"> <i class="fa-solid fa-list-check"></i> <h3>Kelola Kuis</h3> </a>
                 <a href="https://bhe-24.github.io/PortalUjian/" target="_blank" class="dashboard-card ujian"> <i class="fa-solid fa-file-signature"></i> <h3>Kelola Ujian</h3> </a>
             </div>
